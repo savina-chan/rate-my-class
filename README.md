@@ -11,7 +11,7 @@ Through RateMyCSClass, students can browse a comprehensive catalog of computer s
 
 The application will store Users, Classes, and Reviews, along with a relationship between them to maintain review contributions and ratings.
 
-* Users can submit multiple Reviews and rate multiple Classes
+* Users can submit multiple Reviews and rate multiple Classes.
 * Each Class can have multiple Reviews associated with it.
 * Each Review includes a reference to the Class and User who submitted it.
 
@@ -81,14 +81,11 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 ## User Stories or Use Cases
 
-(__TODO__: write out how your application will be used through [user stories](http://en.wikipedia.org/wiki/User_story#Format) and / or [use cases](https://en.wikipedia.org/wiki/Use_case))
-
-1. as non-registered user, I can register a new account with the site
-2. as a user, I can log in to the site
-3. as a user, I can create a new grocery list
-4. as a user, I can view all of the grocery lists I've created in a single list
-5. as a user, I can add items to an existing grocery list
-6. as a user, I can cross off items in an existing grocery list
+1. As non-registered user, I can register a new account with the site.
+2. As a user, I can log in to the site.
+3. As a user, I can browse a list of all available computer science courses.
+4. As a user, I can view detailed information and reviews for a specific course.
+5. As a user, I can submit a new review for a course I've taken.
 
 ## Research Topics
 
@@ -108,9 +105,7 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 10 points total out of 8 required points (___TODO__: addtional points will __not__ count for extra credit)
 
 
-## [Link to Initial Main Project File](app.mjs) 
-
-(__TODO__: create a skeleton Express application with a package.json, app.mjs, views folder, etc. ... and link to your initial app.mjs)
+## [Link to Initial Main Project File](src/app.mjs) 
 
 ## Annotations / References Used
 
