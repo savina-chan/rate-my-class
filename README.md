@@ -1,57 +1,61 @@
-The content below is an example project proposal / requirements document. Replace the text below the lines marked "__TODO__" with details specific to your project. Remove the "TODO" lines.
-
-(__TODO__: your project name)
-
-# Shoppy Shoperson 
+# RateMyCSClass
 
 ## Overview
 
-(__TODO__: a brief one or two paragraph, high-level description of your project)
+RateMyCSClass is a web application designed to help NYU students make informed decisions about computer science classes by providing detailed, student-generated reviews and ratings. Unlike platforms that focus solely on professor reviews, RateMyCSClass centers on the classes themselves, offering insights into aspects like difficulty, workload, and learning value. This focus allows students to evaluate classes based on past student experiences, enabling them to choose classes that best align with their academic goals and learning preferences.
 
-Remembering what to buy at the grocery store is waaaaay too difficult. Also, shopping for groceries when you're hungry leads to regrettable purchases. Sooo... that's where Shoppy Shoperson comes in!
-
-Shoppy Shoperson is a web app that will allow users to keep track of multiple grocery lists. Users can register and login. Once they're logged in, they can create or view their grocery list. For every list that they have, they can add items to the list or cross off items.
+Through RateMyCSClass, students can browse a comprehensive catalog of computer science classes, view aggregate ratings, and read detailed reviews. Registered users can also contribute their own feedback, rate classes they've taken, and engage in a community of peers with similar academic interests. The platform's goal is to create a reliable resource for students navigating NYU's CS curriculum, fostering a more transparent and informed class selection process.
 
 
 ## Data Model
 
-(__TODO__: a description of your application's data and their relationships to each other) 
+The application will store Users, Classes, and Reviews, along with a relationship between them to maintain review contributions and ratings.
 
-The application will store Users, Lists and Items
-
-* users can have multiple lists (via references)
-* each list can have multiple items (by embedding)
-
-(__TODO__: sample documents)
+* Users can submit multiple Reviews and rate multiple Classes
+* Each Class can have multiple Reviews associated with it.
+* Each Review includes a reference to the Class and User who submitted it.
 
 An Example User:
 
 ```javascript
 {
-  username: "shannonshopper",
-  hash: // a password hash,
-  lists: // an array of references to List documents
+  username: "savinachan",
+  email: "sc8881@nyu.edu",
+  password: // a password hash,
+  reviews: // an array of references to Review documents
 }
 ```
 
-An Example List with Embedded Items:
+An Example Class:
 
 ```javascript
 {
-  user: // a reference to a User object
-  name: "Breakfast foods",
-  items: [
-    { name: "pancakes", quantity: "9876", checked: false},
-    { name: "ramen", quantity: "2", checked: true},
-  ],
-  createdAt: // timestamp
+  classCode: "CSCI-UA 467",
+  title: "Applied Internet Technology",
+  reviews: // an array of references to Review documents,
+  averageRating: 5.0 // aggreggate rating based on submitted reviews
 }
 ```
 
+An Example Review:
 
-## [Link to Commented First Draft Schema](db.mjs) 
+```javascript
+{
+  user: // a reference to a User object,
+  class: // a reference to a Class object,
+  semesterTaken: "Fall 2024",
+  professor: "Joe Versoza",
+  rating: 5,
+  difficulty: 3,
+  workload: 4,
+  learningValue: 5,
+  grade: "A",
+  timeSpentWeekly: 10, // approximate hours per week,
+  comment: "This class gave a strong foundation in web development skills with practical, hands-on projects."
+}
+```
 
-(__TODO__: create a first draft of your Schemas in db.mjs and link to it)
+## [Link to Commented First Draft Schema](src/db.mjs) 
 
 ## Wireframes
 
@@ -114,4 +118,3 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 1. [passport.js authentication docs](http://passportjs.org/docs) - (add link to source code that was based on this)
 2. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this)
-
