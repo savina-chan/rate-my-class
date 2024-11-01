@@ -35,7 +35,6 @@ const ReviewSchema = new mongoose.Schema({
   rating: { type: Number, required: true },
   difficulty: { type: Number, required: true },
   workload: { type: Number, required: true },
-  learningValue: { type: Number, required: true },
   grade: { type: String },
   timeSpentWeekly: { type: Number },
   comment: { type: String, required: true },
