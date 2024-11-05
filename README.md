@@ -70,13 +70,13 @@ An Example Review:
 
 ![list](documentation/login-page.png)
 
-/rating-form/slug - This page will allow logged-in users to submit a review for a specific class.
+/slug - This page displays aggregate ratings, individual reviews, and other details for a specific class.
 
-![list](documentation/rating-form-slug.png)
+![list](documentation/class-page.png)
 
-/class-rating/slug - This page displays aggregate ratings, individual reviews, and other details for a specific class.
+/slug/rate - This page will allow logged-in users to submit a review for a specific class.
 
-![list](documentation/class-rating-slug.png)
+![list](documentation/class-rate-form.png)
 
 ## Site Map
 
