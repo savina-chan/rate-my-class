@@ -1,10 +1,11 @@
 {
   "name": "final-project-savina-chan",
   "version": "1.0.0",
+  "type": "module",
   "description": "A web application for NYU students to browse and review computer science courses.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon backend/server.js"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +15,8 @@
     "express": "^4.21.1",
     "mongoose": "^8.7.3",
     "mongoose-slug-plugin": "^2.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
   }
 }
