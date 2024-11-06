@@ -6,10 +6,10 @@ dotenv.config({ path: '../.env' });
 
 // Define the Review Schema
 const ReviewSchema = new mongoose.Schema({
-    // Removed for this milestone (saved for later)
+    // SAVED FOR FUTURE MILESTONE
     // user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     // class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class', required: true },
-    // classCode and className are temporary until User and Class models are implemented
+    // classCode and className ARE TEMPORARY (UNTIL USER AND REVIEW SCHEMAS ARE IMPLEMENTED)
     classCode: { type: String, required: true },
     className: { type: String, required: true },
     professor: { type: String, required: true },
