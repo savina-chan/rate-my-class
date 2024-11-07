@@ -2,6 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import connectDB from './db.js';
 import Review from './models/Review.js';
+import dotenv from 'dotenv';
+
+// Load environment variables from the .env file located in the root directory
+dotenv.config({ path: '../.env' });
 
 // Connect to MongoDB
 connectDB();

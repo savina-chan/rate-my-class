@@ -1,8 +1,4 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
-// Load environment variables from the .env file located in the root directory
-dotenv.config({ path: '../.env' });
 
 // Define the Review Schema
 const ReviewSchema = new mongoose.Schema({
