@@ -30,10 +30,13 @@ An Example Class:
 
 ```javascript
 {
-  classCode: "CSCI-UA 467",
+  code: "CSCI-UA 467",
   title: "Applied Internet Technology",
   reviews: // an array of references to Review documents,
-  averageRating: 5.0 // aggreggate rating based on submitted reviews
+  averageRating: 5.0, // aggreggate rating based on submitted reviews
+  averageDifficulty: 3.0,
+  averageWorkload: 3.0,
+  averageLearningValue: 5.0
 }
 ```
 
@@ -43,11 +46,11 @@ An Example Review:
 {
   user: // a reference to a User object,
   class: // a reference to a Class object,
-  semesterTaken: "Fall 2024",
+  semester: "Fall 2024",
   professor: "Joe Versoza",
   rating: 5,
   difficulty: 3,
-  workload: 4,
+  workload: 3,
   learningValue: 5,
   grade: "A",
   comment: "This class gave a strong foundation in web development skills with practical, hands-on projects."
@@ -70,11 +73,11 @@ An Example Review:
 
 ![list](documentation/login-page.png)
 
-/slug - This page displays aggregate ratings, individual reviews, and other details for a specific class.
+/classes/:slug - This page displays aggregate ratings, individual reviews, and other details for a specific class.
 
 ![list](documentation/class-page.png)
 
-/slug/rate - This page will allow logged-in users to submit a review for a specific class.
+/classes/:slug/rate - This page will allow logged-in users to submit a review for a specific class.
 
 ![list](documentation/class-rate-form.png)
 
@@ -92,10 +95,10 @@ An Example Review:
 
 ## Research Topics
 
-* (6 points) React
-  * Description: React is a popular JavaScript library for building user interfaces, particularly single-page applications. It enables developers to create reusable UI components, which manage their own state and can be composed to build complex interfaces.
-  * Why Use It: React's component-based architecture simplifies the process of developing and maintaining large applications by breaking the UI into smaller, manageable parts. Additionally, React’s virtual DOM enhances performance by updating only the necessary parts of the UI, making the application more responsive.
-  * Modules / Libraries: To implement React, I'll be using `create-react-app` to set up the development environment and streamline configuration. Additionally, I may explore `react-router` for client-side routing and `react-redux` if state management across components becomes necessary.
+* (6 points) React with Vite
+  * Description: React is a popular JavaScript library for building user interfaces, particularly single-page applications. It enables developers to create reusable UI components, which manage their own state and can be composed to build complex interfaces. Vite, a modern build tool and development server, provides a fast alternative to traditional setups. It’s particularly beneficial for React applications because of its efficient hot module replacement (HMR) and optimized builds.
+  * Why Use It: Vite significantly improves development speed due to its faster HMR, which provides almost instant feedback during development. It also offers a lightweight setup, making it easier to maintain and reducing startup times. Paired with React’s component-based structure, Vite enhances productivity and performance in complex UI development.
+  * Modules / Libraries: This project will be initialized with `npm create vite@latest` for a fast and simplified setup. It'll also incorporate `react-router-dom` for managing client-side routing and navigation, allowing dynamic and structured URL paths across the application, and `axios` for handling backend communication. This stack supports the rapid development and management of user-driven interfaces and data interactions.
 * (2 points) Tailwind CSS
   * Description: Tailwind CSS is a utility-first CSS framework designed to speed up styling by providing predefined utility classes that developers can apply directly to HTML elements. Rather than writing custom CSS rules, developers use classes like `bg-blue-500` or `text-center` to apply styles instantly.
   * Why Use It: Tailwind CSS offers flexibility and customization without the need to override styles, unlike traditional CSS frameworks. Its utility-first approach allows developers to rapidly build responsive, consistent UIs with less code and helps maintain design consistency throughout the application.
@@ -112,4 +115,7 @@ An Example Review:
 
 ## Annotations / References Used
 
-1. [None Yet]() - 
+1. [React Documentation](https://react.dev/learn) - General guidance on setting up and using React, covering concepts such as components, state management, and lifecycle methods.
+2. [Vite Documentation](https://vite.dev/guide/) - Used for understanding the intiial setup and Vite's configuration options.
+3. [React Router Documentation](https://reactrouter.com/en/main/start/overview) - Helpful for implementing routes and understanding React Router's hooks to handle URL parameters and navigation.
+4. [Axios Documentation](https://axios-http.com/docs/intro) - Reference for using Axios to handle HTTP requests within React components.

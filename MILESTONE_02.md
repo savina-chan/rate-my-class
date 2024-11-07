@@ -3,28 +3,27 @@ Milestone 02
 
 Repository Link
 ---
-(TODO: add the link to your repository in github, such as, https://github.com/[COURSE]/[REPO_NAME])
+https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan
 
 Special Instructions for Using Form and / or Login
 ---
-(TODO: if your app requires special instructions to use or if your app requires authentication, add information here; otherwise, leave blank)
 
 URL for deployed site 
 ---
-(TODO: add url for your dpeloyed site; should be in this format http://linserv1.cims.nyu.edu:YOUR_PORT_NUMBER)
+http://linserv1.cims.nyu.edu:12189/
 
 URL for form 
 ---
-(TODO: add link to a functioning form)
+http://linserv1.cims.nyu.edu:12189/review-form
 
 URL for form result
 ---
-(TODO: if applicable, add link to page that shows results of submitting form)
+http://linserv1.cims.nyu.edu:12189/ (when the form on the `review-form` page is submitted, the results are displayed on the home page (`/`))
 
 URL to github that shows line of code where research topic(s) are used / implemented
 --- 
-(TODO: add link to github url that shows line or lines of code that demonstrate in progress work on at least one research topic)
+I chose React as the framework for this project and built the frontend using Vite for faster development and optimized builds. The entire React application is located in the [frontend](/frontend/) folder, where research topics such as React, Vite, and React Router have been applied throughout the codebase.
 
 References 
 ---
-(TODO: if applicable, links to annotated lines of code in github repository that were based off of tutorials / articles / sample projects)
+None of the code lines in this project are directly based on tutorials, articles, or sample projects. All implementations are original, developed through understanding gained from official documentation and prior experience. Relevant documentation links are provided in the [README.md](/README.md) to offer context and support for technologies used.
