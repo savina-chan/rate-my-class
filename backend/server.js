@@ -3,6 +3,8 @@ import cors from 'cors';
 import connectDB from './db.js';
 import Review from './models/Review.js';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Load environment variables from the .env file located in the root directory
 dotenv.config({ path: '../.env' });
@@ -12,6 +14,10 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
+
+// Set up __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Middleware to parse incoming JSON requests
 app.use(express.json());
@@ -64,6 +70,14 @@ app.delete('/api/reviews/:id', async (req, res) => {
     catch (error) {
         res.status(500).json({ message: 'Error deleting review' });
     }
+});
+
+// Serve static files from the frontend/dist directory
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// For any other routes, serve index.html from frontend/dist
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 // Start the server on the specified port and log the URL
