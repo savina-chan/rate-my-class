@@ -1,17 +1,17 @@
-# RateMyCSClass
+# RateMyClass
 
 ## Overview
 
-RateMyCSClass is a web application designed to help NYU students make informed decisions about computer science classes by providing detailed, student-generated reviews and ratings. Unlike platforms that focus solely on professor reviews, RateMyCSClass centers on the classes themselves, offering insights into aspects like difficulty, workload, and learning value. This focus allows students to evaluate classes based on past student experiences, enabling them to choose classes that best align with their academic goals and learning preferences.
+RateMyClass is a web application designed to help NYU students make informed decisions about their courses by providing detailed, student-generated reviews and ratings. Unlike platforms that focus solely on professor reviews, RateMyClass centers on the courses themselves, offering insights into aspects like difficulty, workload, and learning value. This focus allows students to evaluate courses based on past student experiences, enabling them to choose classes that best align with their academic goals and learning preferences.
 
-Through RateMyCSClass, students can browse a comprehensive catalog of computer science classes, view aggregate ratings, and read detailed reviews. Registered users can also contribute their own feedback, rate classes they've taken, and engage in a community of peers with similar academic interests. The platform's goal is to create a reliable resource for students navigating NYU's CS curriculum, fostering a more transparent and informed class selection process.
+Through RateMyClass, users can browse a dynamic catalog of classes, view aggregate ratings, and read detailed reviews. Registered users can create new class entries, contribute their own feedback, rate classes they've taken, and engage in a community of peers with similar academic interests. The platform's goal is to create a reliable and flexible resource for students navigating their academic options, fostering a more transparent and informed class selection process.
 
 
 ## Data Model
 
 The application will store Users, Classes, and Reviews, along with a relationship between them to maintain review contributions and ratings.
 
-* Users can submit multiple Reviews and rate multiple Classes.
+* Users can create new Classes, submit multiple Reviews, and rate multiple Classes.
 * Each Class can have multiple Reviews associated with it.
 * Each Review includes a reference to the Class and User who submitted it.
 
@@ -91,7 +91,8 @@ An Example Review:
 2. As a user, I can log in to the site.
 3. As a user, I can browse a list of all available computer science classes.
 4. As a user, I can view detailed information and reviews for a specific class.
-5. As a user, I can submit a new review for a class I've taken.
+5. As a user, I can create a new class entry if it doesn’t already exist.
+6. As a user, I can submit a new review for a class I've taken.
 
 ## Research Topics
 

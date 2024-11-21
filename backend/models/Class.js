@@ -1,23 +1,21 @@
-// SAVED FOR FUTURE MILESTONE
-
-// import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 // import mongooseSlugPlugin from 'mongoose-slug-plugin';
 
-// // Define the Class Schema
-// const ClassSchema = new mongoose.Schema({
-//     classCode: { type: String, required: true },
-//     title: { type: String, required: true },
-//     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
-//     averageRating: { type: Number, default: 0 },
-//     averageDifficulty: { type: Number, default: 0 },
-//     averageWorkload: { type: Number, default: 0 },
-//     averageLearningValue: { type: Number, default: 0 },
-// }, { timestamps: true });
+// Define the Class Schema
+const ClassSchema = new mongoose.Schema({
+    code: { type: String, required: true, unique: true }, // Course code, e.g., "CSCI-UA 467"
+    title: { type: String, required: true },
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }], // References to reviews
+    averageRating: { type: Number, default: 0 },
+    averageDifficulty: { type: Number, default: 0 },
+    averageWorkload: { type: Number, default: 0 },
+    averageLearningValue: { type: Number, default: 0 },
+}, { timestamps: true });
 
-// // Register the Class model with Mongoose
-// const Class = mongoose.model('Class', ClassSchema);
+// Register the Class model with Mongoose
+const Class = mongoose.model('Class', ClassSchema);
 
-// // Add a slug based on the title for easy URL referencing
+// Add a slug based on the title for easy URL referencing
 // ClassSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
 
-// export default Class;
+export default Class;

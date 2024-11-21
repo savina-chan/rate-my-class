@@ -1,10 +1,11 @@
 import express from 'express';
 import cors from 'cors';
+import bcrypt from 'bcryptjs';
 import connectDB from './db.js';
-import Review from './models/Review.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import User from './models/User.js'; // User model
 
 // Load environment variables from the .env file located in the root directory
 dotenv.config({ path: '../.env' });
@@ -24,51 +25,70 @@ app.use(express.json());
 // Middleware to enable CORS
 app.use(cors());
 
-/* Routes */
+// Routes
+// User registration
+app.post('/api/users/register', async (req, res) => {
+    const { username, email, password } = req.body;
+    console.log(req.body)
 
-// Route to fetch all reviews
-app.get('/api/reviews', async (req, res) => {
-    try {
-        // Fetch all reviews from the database
-        const reviews = await Review.find();
-        // Send the reviews as a JSON response
-        res.json(reviews);
-    } 
-    catch (error) {
-        res.status(500).json({ message: 'Error fetching reviews' });
+    // Basic validation to ensure all required fields are provided
+    if (!username || !email || !password) {
+        return res.status(400).json( { message: 'All fields are required.'} )
     }
-});
 
-// Route to create a new review
-app.post('/api/reviews', async (req, res) => {
-    // Destructure the required fields from the request body
-    const { classCode, className, professor, semesterTaken, grade, rating, difficulty, workload, learningValue, comment } = req.body;
     try {
-        // Create a new Review instance with the data from the request
-        const newReview = new Review({ classCode, className, professor, semesterTaken, grade, rating, difficulty, workload, learningValue, comment });
-        // Save the new review to the database
-        const savedReview = await newReview.save();
-        // Send the saved review as a JSON response with a 201 status
-        res.status(201).json(savedReview);
-    } 
-    catch (error) {
-        res.status(400).json({ message: 'Error creating review' });
+        // Check if the user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            res.status(403).json({ message: 'User already exists.' });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create and save the new user
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword,
+        });
+
+        await newUser.save();
+
+        res.status(201).json({ message: 'User registered successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json( {message: 'Server error.'} )
     }
-});
+})
 
-// Route to delete a review by its ID
-app.delete('/api/reviews/:id', async (req, res) => {
+app.post('/api/users/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    // Basic validation to ensure all required fields are provided
+    if (!username || !password) {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
+
     try {
-        // Find the review by its ID parameter
-        const review = await Review.findById(req.params.id);
-        // if (!review) {
-        //     return res.status(404).json({ message: 'Review not found' });
-        // }
-        const removedReview = await Review.deleteOne(review);
-        res.json({ removedReview });
-    } 
-    catch (error) {
-        res.status(500).json({ message: 'Error deleting review' });
+        // Find user by username
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).jason({ message: 'User not found.' });
+        }
+
+        // Compare provided password with hashed password in database
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials.' });
+        }
+
+        // Successful login
+        res.status(200).json({ message: 'Login successful!', user: { id: user._id, username: user.username } });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error.' });
     }
 });
 

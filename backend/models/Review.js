@@ -2,20 +2,16 @@ import mongoose from 'mongoose';
 
 // Define the Review Schema
 const ReviewSchema = new mongoose.Schema({
-    // SAVED FOR FUTURE MILESTONE
-    // user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    // class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class', required: true },
-    // classCode and className ARE TEMPORARY (UNTIL USER AND REVIEW SCHEMAS ARE IMPLEMENTED)
-    classCode: { type: String, required: true },
-    className: { type: String, required: true },
-    professor: { type: String, required: true },
-    semesterTaken: { type: String, required: true },
-    grade: { type: String, required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the User
+    class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class', required: true }, // Reference to the Class
+    professor: { type: String, required: true, trim: true },
+    semester: { type: String, required: true, trim: true },
+    grade: { type: String, required: true, trim: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
     difficulty: { type: Number, required: true, min: 1, max: 5 },
     workload: { type: Number, required: true, min: 1, max: 5 },
     learningValue: { type: Number, required: true, min: 1, max: 5 },
-    comment: { type: String, required: true },
+    comment: { type: String, required: true, trim: true },
 }, { timestamps: true });
 
 // Create the Review model from the defined schema
