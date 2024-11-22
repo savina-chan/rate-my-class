@@ -1,18 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home"; // Home page component
 import Register from "./pages/Register"; // Register page component
 import Login from "./pages/Login";
+import { isAuthenticated } from "../auth";
 
 // Define the main App component
 function App() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // console.log(isLoggedIn);
+
+    // Check authentication status when the app loads
+    useEffect(() => {
+        setIsLoggedIn(isAuthenticated());
+    }, []);
+
     return (
         // Router component to handle navigation between different pages
         <Router>
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+                <Route path="/register" element={<Register isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+                <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
             </Routes>
         </Router>
     );

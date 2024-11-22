@@ -16,6 +16,6 @@ const ClassSchema = new mongoose.Schema({
 const Class = mongoose.model('Class', ClassSchema);
 
 // Add a slug based on the title for easy URL referencing
-// ClassSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
+// ClassSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=code%>' });
 
 export default Class;

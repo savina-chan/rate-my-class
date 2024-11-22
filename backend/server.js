@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import User from './models/User.js'; // User model
+import jwt from 'jsonwebtoken';
 
 // Load environment variables from the .env file located in the root directory
 dotenv.config({ path: '../.env' });
@@ -74,7 +75,7 @@ app.post('/api/users/login', async (req, res) => {
         // Find user by username
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(404).jason({ message: 'User not found.' });
+            return res.status(404).json({ message: 'User not found.' });
         }
 
         // Compare provided password with hashed password in database
@@ -83,8 +84,18 @@ app.post('/api/users/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials.' });
         }
 
+        // Generate a JWT
+        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
         // Successful login
-        res.status(200).json({ message: 'Login successful!', user: { id: user._id, username: user.username } });
+        res
+            .cookie('token', token, {
+                // httpOnly: true, // Ensure cookie is only accessible by the server
+                sameSite: 'strict', // Prevent CSRF
+                maxAge: 24 * 60 * 60 * 1000 // Cookie expires in 1 day
+            })
+            .status(200)
+            .json({ message: 'Login successful!' });
 
     } catch (error) {
         console.error(error);
