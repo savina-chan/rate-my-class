@@ -34,12 +34,17 @@ const ClassPage = ({ isLoggedIn }) => { // Use isLoggedIn prop
 
     return (
         <div>
-            <h2>{classData.title} - {classData.code}</h2>
+            <h2>{classData.code} - {classData.title}</h2>
+            {isLoggedIn && (
+                <div>
+                    <button><Link to={`/${slug}/rate`}>Post a Review</Link></button>
+                </div>
+            )}
             <ul>
                 {reviews.length > 0 ? (
                     reviews.map((review) => (
                         <li key={review._id}>
-                            <p className="text-sm text-gray-500">
+                            <p>
                                 Posted on:{" "}
                                 {new Intl.DateTimeFormat('en-US', {
                                     year: 'numeric',
@@ -56,11 +61,6 @@ const ClassPage = ({ isLoggedIn }) => { // Use isLoggedIn prop
                     <p>No reviews yet. Be the first to post one!</p>
                 )}
             </ul>
-            {isLoggedIn && (
-                <div>
-                    <button><Link to={`/${slug}/rate`}>Post a Rating</Link></button>
-                </div>
-            )}
         </div>
     );
 };

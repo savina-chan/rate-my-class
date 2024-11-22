@@ -5,6 +5,7 @@ import Register from "./pages/Register"; // Register page component
 import Login from "./pages/Login";
 import CreateClass from './pages/CreateClass';
 import ClassPage from './pages/ClassPage';
+import Layout from "./components/Layout";
 import { isAuthenticated } from "../auth";
 import CreateReview from './pages/CreateReview';
 
@@ -21,14 +22,16 @@ function App() {
     return (
         // Router component to handle navigation between different pages
         <Router>
-            <Routes>
-                <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
-                <Route path="/register" element={<Register isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
-                <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
-                <Route path="/create-class" element={<CreateClass />} />
-                <Route path="/:slug" element={<ClassPage isLoggedIn={isLoggedIn} />} />
-                <Route path="/:slug/rate" element={<CreateReview isLoggedIn={isLoggedIn} />} />
-            </Routes>
+            <Layout>
+                <Routes>
+                    <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+                    <Route path="/register" element={<Register isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+                    <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+                    <Route path="/create-class" element={<CreateClass />} />
+                    <Route path="/:slug" element={<ClassPage isLoggedIn={isLoggedIn} />} />
+                    <Route path="/:slug/rate" element={<CreateReview isLoggedIn={isLoggedIn} />} />
+                </Routes>
+            </Layout>
         </Router>
     );
 }

@@ -5,7 +5,7 @@ import connectDB from './db.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import User from './models/User.js'; // User model
+import User from './models/User.js';
 import Class from './models/Class.js';
 import Review from './models/Review.js';
 import jwt from 'jsonwebtoken';

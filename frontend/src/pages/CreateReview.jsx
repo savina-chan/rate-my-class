@@ -60,7 +60,7 @@ const CreateReview = ({ isLoggedIn }) => {
 
     return (
         <div>
-            <h1>Create a Review for {slug.toUpperCase()}</h1>
+            <h2>Post a Review for {slug.toUpperCase()}</h2>
             {/* {message && <p className="mb-4 text-center text-red-500">{message}</p>} */}
             <form onSubmit={handleSubmit}>
                 <input
@@ -95,6 +95,7 @@ const CreateReview = ({ isLoggedIn }) => {
                     max="5"
                     value={formData.rating}
                     onChange={handleChange}
+                    style={{ width: '147px'}}
                     required
                 />
                 <input
@@ -105,6 +106,7 @@ const CreateReview = ({ isLoggedIn }) => {
                     max="5"
                     value={formData.difficulty}
                     onChange={handleChange}
+                    style={{ width: '147px'}}
                     required
                 />
                 <input
@@ -115,6 +117,7 @@ const CreateReview = ({ isLoggedIn }) => {
                     max="5"
                     value={formData.workload}
                     onChange={handleChange}
+                    style={{ width: '147px'}}
                     required
                 />
                 <input
@@ -125,6 +128,7 @@ const CreateReview = ({ isLoggedIn }) => {
                     max="5"
                     value={formData.learningValue}
                     onChange={handleChange}
+                    style={{ width: '147px'}}
                     required
                 />
                 <input
