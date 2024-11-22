@@ -4,7 +4,9 @@ import Home from "./pages/Home"; // Home page component
 import Register from "./pages/Register"; // Register page component
 import Login from "./pages/Login";
 import CreateClass from './pages/CreateClass';
+import ClassPage from './pages/ClassPage';
 import { isAuthenticated } from "../auth";
+import CreateReview from './pages/CreateReview';
 
 // Define the main App component
 function App() {
@@ -24,6 +26,8 @@ function App() {
                 <Route path="/register" element={<Register isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
                 <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
                 <Route path="/create-class" element={<CreateClass />} />
+                <Route path="/:slug" element={<ClassPage isLoggedIn={isLoggedIn} />} />
+                <Route path="/:slug/rate" element={<CreateReview isLoggedIn={isLoggedIn} />} />
             </Routes>
         </Router>
     );

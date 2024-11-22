@@ -7,7 +7,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import User from './models/User.js'; // User model
 import Class from './models/Class.js';
+import Review from './models/Review.js';
 import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
+import authenticate from './auth.js';
+
 
 // Load environment variables from the .env file located in the root directory
 dotenv.config({ path: '../.env' });
@@ -26,6 +30,8 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 // Middleware to enable CORS
 app.use(cors());
+
+app.use(cookieParser());
 
 
 // Routes
@@ -139,6 +145,76 @@ app.post('/api/classes', async (req, res) => {
         });
     } catch (error) {
         console.error('Error creating class:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+
+// GET endpoint to fetch class details by slug
+app.get('/api/classes/:slug', async (req, res) => {
+    try {
+        const { slug } = req.params;
+
+        // Find the class by slug
+        const classDoc = await Class.findOne({ slug }).populate({
+            path: 'reviews',
+            populate: { path: 'user', select: 'username' } // Populate reviews with user details (e.g., username)
+        });
+
+        if (!classDoc) {
+            return res.status(404).json({ message: 'Class not found.' });
+        }
+
+        res.status(200).json(classDoc); // Send the class details
+    } catch (error) {
+        console.error('Error fetching class details:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+
+app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
+    // console.log('Request Received:', req.cookies) // Debug log
+    try {
+        const userId = req.userId;
+        // console.log(userId)
+        const { slug } = req.params;
+        const { professor, semester, grade, rating, difficulty, workload, learningValue, comment} = req.body;
+        console.log('Request Data:', { professor, semester, grade, rating, difficulty, workload, learningValue, comment });
+
+        // Validate required fields
+        if (!professor || !semester || !grade || !rating || !difficulty || !workload || !learningValue || !comment) {
+            return res.status(400).json({ message: 'All fields are required.' });
+        }
+
+        // Find the class by slug
+        const classDoc = await Class.findOne({ slug });
+        if (!classDoc) {
+            return res.status(404).json({ message: 'Class not found.' });
+        }
+
+        // Create the review
+        const review = await Review.create({
+            user: userId, // Use the user ID from the token
+            class: classDoc._id,
+            professor,
+            semester,
+            grade, 
+            rating,
+            difficulty,
+            workload,
+            learningValue,
+            comment
+        });
+
+        // Add the review to the class
+        classDoc.reviews.push(review._id);
+        await classDoc.save();
+
+        // Add the review to the user's reviews array
+        await User.findByIdAndUpdate(userId, { $push: {reviews: review._id } });
+        
+        res.status(201).json({ message: 'Review added successfully.', review });
+    } catch (error) {
+        console.error('Error adding review:', error);
         res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 });
