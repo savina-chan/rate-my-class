@@ -11,9 +11,9 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
 
     return (
         <div>
+            <h2>Find the best classes at NYU, rated by your peers.</h2>
             {isLoggedIn ? (
                 <>
-                    <h2>Find the best classes at NYU, rated by your peers.</h2>
                     <button onClick={handleLogout}>Logout</button>
                     <div>
                     <button>

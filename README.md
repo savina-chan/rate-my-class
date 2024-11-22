@@ -87,12 +87,14 @@ An Example Review:
 
 ## User Stories or Use Cases
 
-1. As non-registered user, I can register a new account with the site.
-2. As a user, I can log in to the site.
-3. As a user, I can browse a list of all available computer science classes.
-4. As a user, I can view detailed information and reviews for a specific class.
-5. As a user, I can create a new class entry if it doesn’t already exist.
-6. As a user, I can submit a new review for a class I've taken.
+1. As a new user, I can register for an account.
+2. As a registered user, I can log into my account.
+3. As a logged-in user, my login session persists through the use of cookies.
+4. As a logged-in user, I can log out of my account.
+5. As a user, I can browse a list of all available classes.
+6. As a logged-in user, I can create a new class.
+7. As a user, I can view detailed information and reviews for a specific class.
+8. As a logged-in user, I can post a review for a class.
 
 ## Research Topics
 

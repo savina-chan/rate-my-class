@@ -27,7 +27,7 @@ function App() {
                     <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
                     <Route path="/register" element={<Register isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
                     <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
-                    <Route path="/create-class" element={<CreateClass />} />
+                    <Route path="/create-class" element={<CreateClass isLoggedIn={isLoggedIn} />} />
                     <Route path="/:slug" element={<ClassPage isLoggedIn={isLoggedIn} />} />
                     <Route path="/:slug/rate" element={<CreateReview isLoggedIn={isLoggedIn} />} />
                 </Routes>

@@ -30,7 +30,8 @@ const CreateReview = ({ isLoggedIn }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isLoggedIn) {
-            setMessage('You must be logged in to post a review.');
+            alert('You must be logged in to post a review.');
+            navigate(`/${slug}`);
             return;
         }
 

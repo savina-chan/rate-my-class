@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const CreateClass = () => {
+const CreateClass = ({ isLoggedIn }) => {
     const [formData, setFormData] = useState({ code: '', title: '' });
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
@@ -14,6 +14,11 @@ const CreateClass = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isLoggedIn) {
+            alert('You must be logged in to create a class.');
+            navigate('/');
+            return;
+        }
         try {
             const response = await axios.post('/api/classes', formData, {
                 headers: { 'Content-Type': 'application/json' }
