@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { logout } from '../../auth';
+import SearchBar from '../components/SearchBar';
 
 const Home = ({ isLoggedIn, setIsLoggedIn }) => {
     const handleLogout = () => {
@@ -12,8 +13,13 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
         <div>
             {isLoggedIn ? (
                 <>
-                    <p>Welcome! You are logged in.</p>
+                    <h2>Find the best classes at NYU, rated by your peers.</h2>
                     <button onClick={handleLogout}>Logout</button>
+                    <div>
+                    <button>
+                            <Link to="/create-class">Create a Class</Link>
+                    </button>
+                    </div>
                 </>
             ) : (
                 <>
@@ -25,6 +31,7 @@ const Home = ({ isLoggedIn, setIsLoggedIn }) => {
                     </button>
                 </>
             )}
+            <SearchBar />
         </div>
     );
 };

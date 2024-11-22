@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-// import mongooseSlugPlugin from 'mongoose-slug-plugin';
+import mongooseSlugPlugin from 'mongoose-slug-plugin';
 
 // Define the Class Schema
 const ClassSchema = new mongoose.Schema({
@@ -12,10 +12,10 @@ const ClassSchema = new mongoose.Schema({
     averageLearningValue: { type: Number, default: 0 },
 }, { timestamps: true });
 
+// Add a slug based on the title for easy URL referencing
+ClassSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=code%>' });
+
 // Register the Class model with Mongoose
 const Class = mongoose.model('Class', ClassSchema);
-
-// Add a slug based on the title for easy URL referencing
-// ClassSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=code%>' });
 
 export default Class;

@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import User from './models/User.js'; // User model
+import Class from './models/Class.js';
 import jwt from 'jsonwebtoken';
 
 // Load environment variables from the .env file located in the root directory
@@ -25,6 +26,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 // Middleware to enable CORS
 app.use(cors());
+
 
 // Routes
 // User registration
@@ -100,6 +102,44 @@ app.post('/api/users/login', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error.' });
+    }
+});
+
+app.get('/api/classes', async (req, res) => {
+    try {
+        const classes = await Class.find(); // Retrieve all classes from the database
+        res.status(200).json(classes);
+    } catch (error) {
+        console.error('Error fetching classes:', error);
+        res.status(500).json({ message: 'Server error. Could not fetch classes.' })
+    }
+});
+
+app.post('/api/classes', async (req, res) => {
+    try {
+        const { code, title } = req.body;
+
+        // Validate required fields
+        if (!code || !title) {
+            return res.status(400).json({ message: 'Code and title are required.' });
+        }
+
+        // Check for duplicates
+        const existingClass = await Class.findOne({ code });
+        if (existingClass) {
+            return res.status(409).json({ message: 'Class with this code already exists.' });
+        }
+
+        // Create the new class document
+        const newClass = await Class.create({ code, title });
+
+        res.status(201).json({
+            message: 'Class created successfully.',
+            data: newClass,
+        });
+    } catch (error) {
+        console.error('Error creating class:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 });
 
