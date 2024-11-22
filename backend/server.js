@@ -12,9 +12,8 @@ import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import authenticate from './auth.js';
 
-
 // Load environment variables from the .env file located in the root directory
-dotenv.config({ path: '../.env' });
+dotenv.config();
 
 // Connect to MongoDB
 connectDB();
