@@ -12,6 +12,21 @@ const CreateClass = ({ isLoggedIn }) => {
         setFormData({ ...formData, [name]: value});
     };
 
+    // Validate class code format
+    const validateClassCode = (code) => {
+        const classCodePattern = /^[A-Z]{2,5}-[A-Z]{2,3} \d{1,4}$/; 
+        // Pattern: 2–5 uppercase letters, a dash, 2–3 uppercase letters, a space, and 1–4 digits
+        return classCodePattern.test(code);
+    };
+
+    // Capitalize the first letter of each word in the title
+    const capitalizeTitle = (title) => {
+        return title
+            .split(/\s+/)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isLoggedIn) {
@@ -19,8 +34,21 @@ const CreateClass = ({ isLoggedIn }) => {
             navigate('/');
             return;
         }
+
+        // Validate class code
+        if (!validateClassCode(formData.code)) {
+            alert('Class code must be in the format: ABCD-XX 123 (Subject-SchoolCode ClassCode, with uppercase letters and numbers).');
+            return;
+        }
+
+        // Format the title
+        const formattedData = {
+            ...formData,
+            title: capitalizeTitle(formData.title),
+        };
+
         try {
-            const response = await axios.post('/api/classes', formData, {
+            const response = await axios.post('/api/classes', formattedData, {
                 headers: { 'Content-Type': 'application/json' }
             });
             setMessage(response.data.message || 'Class created successfully!');

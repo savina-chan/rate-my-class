@@ -26,6 +26,27 @@ const CreateReview = ({ isLoggedIn }) => {
         setFormData({ ...formData, [name]: value});
     };
 
+    // Validate the professor name
+    const validateProfessor = (value) => {
+        // Check if the input contains at least two words
+        const words = value.trim().split(/\s+/);
+        return words.length >= 2;
+    };
+
+    // Capitalize the first letter of each name for the professor
+    const capitalizeProfessor = (professor) => {
+        return professor
+            .split(/\s+/)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    };
+
+    // Validate the semester format
+    const validateSemester = (value) => {
+        const semesterPattern = /^(Fall|Winter|Spring|Summer) \d{4}$/;
+        return semesterPattern.test(value);
+    };
+
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,9 +56,22 @@ const CreateReview = ({ isLoggedIn }) => {
             return;
         }
 
+        // Check professor validity
+        if (!validateProfessor(formData.professor)) {
+            alert('Professor name must include both a first and last name.');
+            return;
+        }
+
+        // Check semester validity
+        if (!validateSemester(formData.semester)) {
+            alert('Semester must have a valid season (capitalized) and a 4-digit year.');
+            return;
+        }
+
         // Convert numeric fields to numbers
         const formattedData = {
             ...formData,
+            professor: capitalizeProfessor(formData.professor),
             rating: Number(formData.rating),
             difficulty: Number(formData.difficulty),
             workload: Number(formData.workload),
@@ -47,7 +81,7 @@ const CreateReview = ({ isLoggedIn }) => {
         try {
             // Send a POST request to the backend
             // console.log(`POST URL: /api/classes/${slug}/reviews`, formattedData);
-            const response = await axios.post(`/api/classes/${slug}/reviews`, formData, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
+            const response = await axios.post(`/api/classes/${slug}/reviews`, formattedData, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
 
             if (response.status === 201) {
                 // Redirect back to the class page after a successful submission
@@ -80,58 +114,78 @@ const CreateReview = ({ isLoggedIn }) => {
                     onChange={handleChange}
                     required
                 />
-                <input
-                    type="text"
-                    name="grade"
-                    placeholder="Grade"
+                <select
+                    name='grade'
                     value={formData.grade}
                     onChange={handleChange}
                     required
-                />
-                <input
-                    type="number"
+                >
+                    <option value=''>Grade</option>
+                    <option value="A">A</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B">B</option>
+                    <option value="B-">B-</option>
+                    <option value="C+">C+</option>
+                    <option value="C">C</option>
+                    <option value="C-">C-</option>
+                    <option value="D+">D+</option>
+                    <option value="D">D</option>
+                    <option value="F">F</option>
+                    <option value="N/A">N/A</option>
+                </select>
+                <select
                     name="rating"
-                    placeholder="Rating (1-5)"
-                    min="1"
-                    max="5"
                     value={formData.rating}
                     onChange={handleChange}
-                    style={{ width: '147px'}}
                     required
-                />
-                <input
-                    type="number"
+                >
+                    <option value="">Rating</option>
+                    {[1, 2, 3, 4, 5].map((num) => (
+                        <option key={num} value={num}>
+                            {num}
+                        </option>
+                    ))}
+                </select>
+                <select
                     name="difficulty"
-                    placeholder="Difficulty (1-5)"
-                    min="1"
-                    max="5"
                     value={formData.difficulty}
                     onChange={handleChange}
-                    style={{ width: '147px'}}
                     required
-                />
-                <input
-                    type="number"
+                >
+                    <option value="">Difficulty</option>
+                    {[1, 2, 3, 4, 5].map((num) => (
+                        <option key={num} value={num}>
+                            {num}
+                        </option>
+                    ))}
+                </select>
+                <select
                     name="workload"
-                    placeholder="Workload (1-5)"
-                    min="1"
-                    max="5"
                     value={formData.workload}
                     onChange={handleChange}
-                    style={{ width: '147px'}}
                     required
-                />
-                <input
-                    type="number"
+                >
+                    <option value="">Workload</option>
+                    {[1, 2, 3, 4, 5].map((num) => (
+                        <option key={num} value={num}>
+                            {num}
+                        </option>
+                    ))}
+                </select>
+                <select
                     name="learningValue"
-                    placeholder="Learning Value (1-5)"
-                    min="1"
-                    max="5"
                     value={formData.learningValue}
                     onChange={handleChange}
-                    style={{ width: '147px'}}
                     required
-                />
+                >
+                    <option value="">Learning Value</option>
+                    {[1, 2, 3, 4, 5].map((num) => (
+                        <option key={num} value={num}>
+                            {num}
+                        </option>
+                    ))}
+                </select>
                 <input
                     name="comment"
                     placeholder="Comment"
