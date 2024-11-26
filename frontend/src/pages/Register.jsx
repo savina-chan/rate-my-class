@@ -21,7 +21,7 @@ const Register = () => {
         e.preventDefault(); // Prevent the default form submission behavior
         try {
             // Send a POST request to the backend API to register the user
-            const response = await axios.post('/api/users/register', formData, { headers: { 'Content-Type': 'application/json' }, });
+            const response = await axios.post('/api/users/register', formData, { headers: { 'Content-Type': 'application/json' } });
             setMessage(response.data.message || 'Registration successful!');
 
             // Redirect to the home page if registration is successful
@@ -35,25 +35,58 @@ const Register = () => {
     }
 
     return (
-        <div>
-            {/* <div></div> */}
-            <h2>Register</h2>
-            {message && <p>{message}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    {/* <label htmlFor='username'>Username</label>? */}
-                    <input type='text' name='username' id='username' placeholder='username' value={formData.username} onChange={handleChange} required/>
-                </div>
-                <div>
-                    {/* <label htmlFor='username'>Email</label> */}
-                    <input type='email' name='email' id='email' placeholder='email' value={formData.email} onChange={handleChange} required/>
-                </div>
-                <div>
-                    {/* <label htmlFor='password'>Password</label> */}
-                    <input type='password' name='password' id='password' placeholder='password' value={formData.password} onChange={handleChange} required/>
-                </div>
-                <button type='submit'>Submit</button>
-            </form>
+        <div className="flex items-center justify-center">
+            <div className="p-8 rounded-lg max-w-md w-full">
+                <h2 className="text-4xl font-bold text-center mb-6 text-neutral-500">Register</h2>
+                {message && <p className="text-center text-lg text-red-500 mb-4">{message}</p>}
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-violet-400 text-neutral-100 py-2 rounded-lg hover:bg-violet-500"
+                    >
+                        Register
+                    </button>
+                </form>
+                <p className="mt-4 text-center text-xl text-neutral-500">
+                    Already have an account?{' '}
+                    <a href="/login" className="text-violet-500 hover:underline">
+                        Login
+                    </a>
+                </p>
+            </div>
         </div>
     );
 };

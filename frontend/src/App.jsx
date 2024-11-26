@@ -22,9 +22,9 @@ function App() {
     return (
         // Router component to handle navigation between different pages
         <Router>
-            <Layout>
+            <Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
                 <Routes>
-                    <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+                    <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
                     <Route path="/register" element={<Register isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
                     <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
                     <Route path="/create-class" element={<CreateClass isLoggedIn={isLoggedIn} />} />

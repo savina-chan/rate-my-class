@@ -5,7 +5,11 @@ export default {
     './src/**/*.{js,jsx,ts,tsx}', // Include all React components
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Montserrat'], // Replace default sans-serif with Montserrat
+      },
+    },
   },
   plugins: [],
 };

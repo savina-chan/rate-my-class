@@ -11,3 +11,4 @@ export const isAuthenticated = () => {
 export const logout = () => {
     Cookies.remove('token'); // Remove the token cookie
 };
+

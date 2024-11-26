@@ -9,7 +9,7 @@ const CreateClass = ({ isLoggedIn }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value});
+        setFormData({ ...formData, [name]: value });
     };
 
     // Validate class code format
@@ -59,18 +59,47 @@ const CreateClass = ({ isLoggedIn }) => {
     };
 
     return (
-        <div>
-            {/* <div></div> */}
-            <h2>Create a Class</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <input type='text' name='code' id='code' placeholder='code' value={formData.code} onChange={handleChange} required></input>
-                </div>
-                <div>
-                <input type='text' name='title' id='title' placeholder='title' value={formData.title} onChange={handleChange} required></input>
-                </div>
-                <button type='submit'>Submit</button>
-            </form>
+        <div className="flex items-center justify-center">
+            <div className="p-8 rounded-lg max-w-md w-full">
+                <h2 className="text-4xl font-bold text-center mb-6 text-neutral-500">
+                    Create a Class
+                </h2>
+                {message && (
+                    <p className="text-center text-red-500 mb-4">
+                        {message}
+                    </p>
+                )}
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <input
+                            type="text"
+                            name="code"
+                            placeholder="Code"
+                            value={formData.code}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <input
+                            type="text"
+                            name="title"
+                            placeholder="Title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-violet-400 text-neutral-100 py-2 rounded-lg hover:bg-violet-500"
+                    >
+                        Submit
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

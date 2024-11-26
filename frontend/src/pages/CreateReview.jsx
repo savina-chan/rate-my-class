@@ -94,107 +94,140 @@ const CreateReview = ({ isLoggedIn }) => {
     };
 
     return (
-        <div>
-            <h2>Post a Review for {slug.toUpperCase()}</h2>
-            {/* {message && <p className="mb-4 text-center text-red-500">{message}</p>} */}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="professor"
-                    placeholder="Professor"
-                    value={formData.professor}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="text"
-                    name="semester"
-                    placeholder="Semester"
-                    value={formData.semester}
-                    onChange={handleChange}
-                    required
-                />
-                <select
-                    name='grade'
-                    value={formData.grade}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value=''>Grade</option>
-                    <option value="A">A</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B">B</option>
-                    <option value="B-">B-</option>
-                    <option value="C+">C+</option>
-                    <option value="C">C</option>
-                    <option value="C-">C-</option>
-                    <option value="D+">D+</option>
-                    <option value="D">D</option>
-                    <option value="F">F</option>
-                    <option value="N/A">N/A</option>
-                </select>
-                <select
-                    name="rating"
-                    value={formData.rating}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Rating</option>
-                    {[1, 2, 3, 4, 5].map((num) => (
-                        <option key={num} value={num}>
-                            {num}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    name="difficulty"
-                    value={formData.difficulty}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Difficulty</option>
-                    {[1, 2, 3, 4, 5].map((num) => (
-                        <option key={num} value={num}>
-                            {num}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    name="workload"
-                    value={formData.workload}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Workload</option>
-                    {[1, 2, 3, 4, 5].map((num) => (
-                        <option key={num} value={num}>
-                            {num}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    name="learningValue"
-                    value={formData.learningValue}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Learning Value</option>
-                    {[1, 2, 3, 4, 5].map((num) => (
-                        <option key={num} value={num}>
-                            {num}
-                        </option>
-                    ))}
-                </select>
-                <input
-                    name="comment"
-                    placeholder="Comment"
-                    value={formData.comment}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit">Submit</button>
-            </form>
+        <div className="flex items-center justify-center">
+            <div className="p-8 rounded-lg max-w-3xl w-full">
+                <h2 className="text-3xl font-bold text-center mb-6 text-neutral-500">
+                    Create a Review for {slug.toUpperCase()}
+                </h2>
+                {message && (
+                    <p className="text-center text-red-500 mb-4">{message}</p>
+                )}
+                <form onSubmit={handleSubmit}>
+                    {/* Top Row: Professor, Semester, Grade */}
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                        <input
+                            type="text"
+                            name="professor"
+                            placeholder="Professor"
+                            value={formData.professor}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        />
+                        <input
+                            type="text"
+                            name="semester"
+                            placeholder="Semester"
+                            value={formData.semester}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        />
+                        <select
+                            name="grade"
+                            value={formData.grade}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        >
+                            <option value="">Grade</option>
+                            <option value="A">A</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B">B</option>
+                            <option value="B-">B-</option>
+                            <option value="C+">C+</option>
+                            <option value="C">C</option>
+                            <option value="C-">C-</option>
+                            <option value="D+">D+</option>
+                            <option value="D">D</option>
+                            <option value="F">F</option>
+                            <option value="N/A">N/A</option>
+                        </select>
+                    </div>
+
+                    {/* Second Row: Rating, Difficulty, Workload, Learning Value */}
+                    <div className="grid grid-cols-4 gap-4 mb-4">
+                        <select
+                            name="rating"
+                            value={formData.rating}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        >
+                            <option value="">Rating</option>
+                            {[1, 2, 3, 4, 5].map((num) => (
+                                <option key={num} value={num}>
+                                    {num}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            name="difficulty"
+                            value={formData.difficulty}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        >
+                            <option value="">Difficulty</option>
+                            {[1, 2, 3, 4, 5].map((num) => (
+                                <option key={num} value={num}>
+                                    {num}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            name="workload"
+                            value={formData.workload}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        >
+                            <option value="">Workload</option>
+                            {[1, 2, 3, 4, 5].map((num) => (
+                                <option key={num} value={num}>
+                                    {num}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            name="learningValue"
+                            value={formData.learningValue}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        >
+                            <option value="">Learning Value</option>
+                            {[1, 2, 3, 4, 5].map((num) => (
+                                <option key={num} value={num}>
+                                    {num}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Comments */}
+                    <div className="mb-4">
+                        <textarea
+                            name="comment"
+                            placeholder="Comments"
+                            value={formData.comment}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                            rows="4"
+                        ></textarea>
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                        type="submit"
+                        className="w-full bg-violet-400 text-neutral-100 py-2 rounded-lg hover:ring-violet-500"
+                    >
+                        Submit
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };
