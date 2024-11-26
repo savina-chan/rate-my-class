@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Montserrat'], // Replace default sans-serif with Montserrat
+        sans: ['Jua'], // Replace default sans-serif with Jua
       },
     },
   },

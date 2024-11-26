@@ -14,7 +14,7 @@ const Layout = ({ children, isLoggedIn, setIsLoggedIn }) => {
     return (
         <div className="min-h-screen bg-stone-100 font-sans">
             {/* Header Section */}
-            <header className="bg-violet-200 text-stone-100">
+            <header className="bg-violet-300 text-stone-100">
                 <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
                     {/* Left Side - Logo and Title */}
                     <div className="flex items-center space-x-2">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Login = ({ setIsLoggedIn }) => {
     const [formData, setFormData] = useState({ username: '', password: '' });
@@ -16,6 +17,8 @@ const Login = ({ setIsLoggedIn }) => {
         e.preventDefault();
         try {
             const response = await axios.post('/api/users/login', formData, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
+            // Cookies.set('token', response.data.token, { expires: 1 }); // Store the token
+            Cookies.set('userId', response.data.userId, { expires: 1 }); // Store the user ID
             setIsLoggedIn(true);
             setMessage(response.data.message || 'Login successful!');
             if (response.status === 200) {

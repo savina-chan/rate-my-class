@@ -1,6 +1,4 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '@fontsource/montserrat'; /* Defaults to 400 weight */
-@import '@fontsource/montserrat/500.css'; /* Optional for different weights */
-@import '@fontsource/montserrat/700.css'; /* Optional for bold weight */
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');

@@ -8,6 +8,7 @@ import ClassPage from './pages/ClassPage';
 import Layout from "./components/Layout";
 import { isAuthenticated } from "../auth";
 import CreateReview from './pages/CreateReview';
+import EditReview from './pages/EditReview';
 
 // Define the main App component
 function App() {
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/create-class" element={<CreateClass isLoggedIn={isLoggedIn} />} />
                     <Route path="/:slug" element={<ClassPage isLoggedIn={isLoggedIn} />} />
                     <Route path="/:slug/rate" element={<CreateReview isLoggedIn={isLoggedIn} />} />
+                    <Route path="/:slug/edit-review/:reviewId" element={<EditReview isLoggedIn={isLoggedIn} />} />
                 </Routes>
             </Layout>
         </Router>

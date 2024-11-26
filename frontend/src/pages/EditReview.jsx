@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const CreateReview = ({ isLoggedIn }) => {
-    const { slug } = useParams(); // Get the class slug from the URL
+const EditReview = ({ isLoggedIn }) => {
+    const { slug, reviewId } = useParams();
     const navigate = useNavigate();
 
-    // State for form data
     const [formData, setFormData] = useState({
         professor: '',
         semester: '',
@@ -15,15 +14,28 @@ const CreateReview = ({ isLoggedIn }) => {
         difficulty: '',
         workload: '',
         learningValue: '',
-        comment: ''
+        comment: '',
     });
 
-    // State for messages or errors
     const [message, setMessage] = useState('');
+
+    // Fetch the review data
+    useEffect(() => {
+        const fetchReview = async () => {
+            try {
+                const response = await axios.get(`/api/reviews/${reviewId}`, { withCredentials: true });
+                setFormData(response.data);
+            } catch (error) {
+                console.error('Error fetching review:', error);
+                setMessage('Failed to load review.');
+            }
+        };
+        fetchReview();
+    }, [reviewId]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value});
+        setFormData({ ...formData, [name]: value });
     };
 
     // Validate the professor name
@@ -47,7 +59,6 @@ const CreateReview = ({ isLoggedIn }) => {
         return semesterPattern.test(value);
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isLoggedIn) {
@@ -79,17 +90,14 @@ const CreateReview = ({ isLoggedIn }) => {
         };
 
         try {
-            // Send a POST request to the backend
-            // console.log(`POST URL: /api/classes/${slug}/reviews`, formattedData);
-            const response = await axios.post(`/api/classes/${slug}/reviews`, formattedData, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
-
-            if (response.status === 201) {
-                // Redirect back to the class page after a successful submission
-                navigate(`/${slug}`);
+            const response = await axios.put(`/api/reviews/${reviewId}`, formattedData, { withCredentials: true });
+            
+            if (response.status === 200) {
+                navigate(`/${slug}`); // Redirect back to the class page after successful update
             }
         } catch (error) {
-            console.error('Error submitting review:', error);
-            setMessage(error.response?.data?.message || 'An error occurred.');
+            console.error('Error updating review:', error);
+            setMessage('Failed to update review.');
         }
     };
 
@@ -97,7 +105,7 @@ const CreateReview = ({ isLoggedIn }) => {
         <div className="flex items-center justify-center">
             <div className="p-8 rounded-lg max-w-3xl w-full">
                 <h2 className="text-3xl font-bold text-center mb-6 text-neutral-500">
-                    Create a Review for {slug.toUpperCase()}
+                    Edit Your Review for {slug.toUpperCase()}
                 </h2>
                 {message && (
                     <p className="text-center text-red-500 mb-4">{message}</p>
@@ -224,7 +232,7 @@ const CreateReview = ({ isLoggedIn }) => {
                         type="submit"
                         className="w-full bg-violet-400 text-neutral-100 py-2 rounded-lg hover:ring-violet-500"
                     >
-                        Submit
+                        Update
                     </button>
                 </form>
             </div>
@@ -232,4 +240,4 @@ const CreateReview = ({ isLoggedIn }) => {
     );
 };
 
-export default CreateReview;
+export default EditReview;

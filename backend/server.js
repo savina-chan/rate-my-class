@@ -32,7 +32,6 @@ app.use(cors());
 
 app.use(cookieParser());
 
-
 // Routes
 // User registration
 app.post('/api/users/register', async (req, res) => {
@@ -102,7 +101,7 @@ app.post('/api/users/login', async (req, res) => {
                 maxAge: 24 * 60 * 60 * 1000 // Cookie expires in 1 day
             })
             .status(200)
-            .json({ message: 'Login successful!' });
+            .json({ message: 'Login successful!', token, userId: user._id });
 
     } catch (error) {
         console.error(error);
@@ -170,6 +169,29 @@ app.get('/api/classes/:slug', async (req, res) => {
     }
 });
 
+app.get('/api/reviews/:reviewId', authenticate, async (req, res) => {
+    const { reviewId } = req.params;
+
+    try {
+        const review = await Review.findById(reviewId);
+
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found.' });
+        }
+
+        // Ensure the review belongs to the logged-in user
+        if (review.user.toString() !== req.userId) {
+            return res.status(403).json({ message: 'Unauthorized to access this review.' });
+        }
+
+        res.status(200).json(review);
+    } catch (error) {
+        console.error('Error fetching review:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+
+
 app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
     // console.log('Request Received:', req.cookies) // Debug log
     try {
@@ -208,12 +230,110 @@ app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
         classDoc.reviews.push(review._id);
         await classDoc.save();
 
+        // Calculate new averages
+        const reviews = await Review.find({ class: classDoc._id });
+        const averages = {
+            averageRating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
+            averageDifficulty: reviews.reduce((sum, r) => sum + r.difficulty, 0) / reviews.length,
+            averageWorkload: reviews.reduce((sum, r) => sum + r.workload, 0) / reviews.length,
+            averageLearningValue: reviews.reduce((sum, r) => sum + r.learningValue, 0) / reviews.length,
+        };
+
+        await Class.findByIdAndUpdate(classDoc._id, averages);
+        
         // Add the review to the user's reviews array
         await User.findByIdAndUpdate(userId, { $push: {reviews: review._id } });
         
         res.status(201).json({ message: 'Review added successfully.', review });
     } catch (error) {
         console.error('Error adding review:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+
+app.put('/api/reviews/:reviewId', authenticate, async (req, res) => {
+    try {
+        const { reviewId } = req.params;
+        const updatedFields = req.body;
+
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found.' });
+        }
+
+        // Ensure the review belongs to the logged-in user
+        if (review.user.toString() !== req.userId) {
+            return res.status(403).json({ message: 'Unauthorized to update this review.' });
+        }
+
+        // Update the review fields
+        Object.assign(review, updatedFields);
+        await review.save();
+
+        // Recalculate averages for the class
+        const classDoc = await Class.findById(review.class).populate('reviews');
+        const reviews = classDoc.reviews;
+        const averages = {
+            averageRating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
+            averageDifficulty: reviews.reduce((sum, r) => sum + r.difficulty, 0) / reviews.length,
+            averageWorkload: reviews.reduce((sum, r) => sum + r.workload, 0) / reviews.length,
+            averageLearningValue: reviews.reduce((sum, r) => sum + r.learningValue, 0) / reviews.length,
+        };
+        await Class.findByIdAndUpdate(review.class, averages);
+
+        res.status(200).json({ message: 'Review updated successfully.', review });
+    } catch (error) {
+        console.error('Error updating review:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+});
+
+app.delete('/api/reviews/:reviewId', authenticate, async (req, res) => {
+    try {
+        const { reviewId } = req.params;
+
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found.' });
+        }
+
+        // Ensure the review belongs to the logged-in user
+        if (review.user.toString() !== req.userId) {
+            return res.status(403).json({ message: 'Unauthorized to delete this review.' });
+        }
+
+        // Remove the review from the `reviews` array in the associated Class
+        await Class.findByIdAndUpdate(review.class, {
+            $pull: { reviews: review._id },
+        });
+
+        // Remove the review from the `reviews` array in the associated User
+        await User.findByIdAndUpdate(review.user, {
+            $pull: { reviews: review._id },
+        });
+
+        // Delete the review
+        await Review.findByIdAndDelete(reviewId);
+
+        // Recalculate averages for the class
+        const classDoc = await Class.findById(review.class).populate('reviews');
+        const reviews = classDoc.reviews;
+        const averages = reviews.length > 0 ? {
+            averageRating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
+            averageDifficulty: reviews.reduce((sum, r) => sum + r.difficulty, 0) / reviews.length,
+            averageWorkload: reviews.reduce((sum, r) => sum + r.workload, 0) / reviews.length,
+            averageLearningValue: reviews.reduce((sum, r) => sum + r.learningValue, 0) / reviews.length,
+        } : {
+            averageRating: 0,
+            averageDifficulty: 0,
+            averageWorkload: 0,
+            averageLearningValue: 0,
+        };
+        await Class.findByIdAndUpdate(review.class, averages);
+
+        res.status(200).json({ message: 'Review deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting review:', error);
         res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 });
