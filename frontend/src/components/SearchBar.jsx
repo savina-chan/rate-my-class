@@ -43,23 +43,23 @@ const SearchBar = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 onFocus={() => setIsFocused(true)} // Show dropdown when input is focused
                 onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Collapse dropdown after 200ms (to allow click)
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-400"
+                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300"
             />
 
             {/* Dropdown */}
             {isFocused && (
-                <ul className="absolute left-0 right-0 bg-white border border-neutral-300 rounded-lg max-h-60 overflow-y-auto z-10">
+                <ul className="absolute left-0 right-0 bg-white border border-stone-300 rounded-lg max-h-60 overflow-y-auto z-10">
                     {filteredClasses.map((cls) => (
                         <li
                             key={cls._id}
                             onClick={() => handleClassClick(cls)} // Redirect on click
-                            className="px-4 py-2 hover:bg-neutral-100 cursor-pointer"
+                            className="px-4 py-2 hover:bg-stone-100 cursor-pointer text-stone-500"
                         >
                             {cls.code} - {cls.title}
                         </li>
                     ))}
                     {filteredClasses.length === 0 && (
-                        <li className="px-4 py-2 text-neutral-500">No classes found</li>
+                        <li className="px-4 py-2 text-stone-500">No classes found</li>
                     )}
                 </ul>
             )}

@@ -1,14 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { logout } from '../../auth';
+import Cookies from 'js-cookie';
 
 const Layout = ({ children, isLoggedIn, setIsLoggedIn }) => {
-    // const username = Cookies.get('username'); // Retrieve the username from cookies
+    const [username, setUsername] = useState('');
+
+    const capitalizeFirstLetter = (string) => {
+        if (!string) return '';
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    };
+
+    useEffect(() => {
+        const fetchUsername = async () => {
+            const userId = Cookies.get('userId'); // Retrieve the userId from the cookie
+            if (userId) {
+                try {
+                    const response = await fetch(`/api/user/${userId}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUsername(capitalizeFirstLetter(data.username));
+                    } else {
+                        console.error('Failed to fetch username:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error fetching username:', error);
+                }
+            }
+        };
+
+        if (isLoggedIn) {
+            fetchUsername();
+        }
+    }, [isLoggedIn]);
 
     const handleLogout = () => {
         logout(); // Remove the token cookie
         setIsLoggedIn(false); // Update the login state
+        setUsername(''); // Clear the username
     };
 
     return (
@@ -28,14 +57,14 @@ const Layout = ({ children, isLoggedIn, setIsLoggedIn }) => {
                         <Link to="/" className="text-5xl font-bold">RateMyClass</Link>
                     </div>
 
-                    {/* Right Side - Auth Links or Greeting */}
+                    {/* Right Side - Auth Links */}
                     <div className="flex items-center space-x-4">
                         {isLoggedIn ? (
                             <>
-                                <span className="text-sm"></span>
+                                <span className="text-stone-100 text-2xl">{`Hello, ${username}!`}</span>
                                 <button
                                     onClick={handleLogout}
-                                    className="px-8 py-3 bg-stone-100 text-violet-400 rounded-md hover:bg-stone-200"
+                                    className="px-8 py-3 bg-stone-100 text-violet-300 rounded-md hover:bg-stone-200 text-xl"
                                 >
                                     Logout
                                 </button>
@@ -44,13 +73,13 @@ const Layout = ({ children, isLoggedIn, setIsLoggedIn }) => {
                             <>
                                 <Link
                                     to="/login"
-                                    className="px-8 py-3 bg-stone-100 text-violet-400 rounded-md hover:bg-stone-200"
+                                    className="px-8 py-3 bg-stone-100 text-violet-300 rounded-md hover:bg-stone-200 text-xl"
                                 >
                                     Login
                                 </Link>
                                 <Link
                                     to="/register"
-                                    className="px-8 py-3 bg-stone-100 text-violet-400 rounded-md hover:bg-stone-200"
+                                    className="px-8 py-3 bg-stone-100 text-violet-300 rounded-md hover:bg-stone-200 text-xl"
                                 >
                                     Register
                                 </Link>

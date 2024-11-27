@@ -11,6 +11,7 @@ import Review from './models/Review.js';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import authenticate from './auth.js';
+import sanitize from 'mongo-sanitize';
 
 // Load environment variables from the .env file located in the root directory
 dotenv.config();
@@ -32,21 +33,27 @@ app.use(cors());
 
 app.use(cookieParser());
 
-// Routes
 // Endpoint for user registration
 app.post('/api/users/register', async (req, res) => {
-    const { username, email, password } = req.body;
+    // Sanitize the incoming request data
+    const username = sanitize(req.body.username);
+    const email = sanitize(req.body.email);
+    const password = sanitize(req.body.password);
 
     // Ensure all required fields are provided
     if (!username || !email || !password) {
-        return res.status(400).json( { message: 'All fields are required.'} )
+        return res.status(400).json({ message: 'All fields are required.' });
     }
 
     try {
         // Check if a user with the same username or email already exists in the database
-        const existingUser = await User.findOne({ $or: [{ username }, { email }]} );
+        const existingUser = await User.findOne({
+            $or: [{ username }, { email }],
+        });
         if (existingUser) {
-            res.status(403).json({ message: 'User with this username or email already exists.' });
+            return res
+                .status(403)
+                .json({ message: 'User with this username or email already exists.' });
         }
 
         // Hash the password
@@ -56,7 +63,7 @@ app.post('/api/users/register', async (req, res) => {
         const newUser = new User({
             username,
             email,
-            password: hashedPassword // Store the hashed password, not the plain text
+            password: hashedPassword, // Store the hashed password, not the plain text
         });
 
         // Save the new user to the database
@@ -65,13 +72,15 @@ app.post('/api/users/register', async (req, res) => {
         res.status(201).json({ message: 'User registered successfully.' });
     } catch (error) {
         console.error('Error registering an account:', error);
-        res.status(500).json( {message: 'Server error. Could not register.'} )
+        res.status(500).json({ message: 'Server error. Could not register.' });
     }
 });
 
 // Endpoint for user login
 app.post('/api/users/login', async (req, res) => {
-    const { username, password } = req.body;
+    // Sanitize the incoming request data
+    const username = sanitize(req.body.username);
+    const password = sanitize(req.body.password);
 
     // Ensure all required fields are provided
     if (!username || !password) {
@@ -92,13 +101,17 @@ app.post('/api/users/login', async (req, res) => {
         }
 
         // Generate a JWT (JSON Web Token) for authentication
-        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign(
+            { id: user._id, username: user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '1d' }
+        );
 
         // Successful login
         res
             .cookie('token', token, {
                 sameSite: 'strict', // Prevent CSRF
-                maxAge: 24 * 60 * 60 * 1000 // Set cookie expiration to 1 day
+                maxAge: 24 * 60 * 60 * 1000, // Set cookie expiration to 1 day
             })
             .status(200)
             .json({ message: 'Login successful.', token, userId: user._id });
@@ -106,6 +119,20 @@ app.post('/api/users/login', async (req, res) => {
     } catch (error) {
         console.error('Error logging into account:', error);
         res.status(500).json({ message: 'Server error. Could not login.' });
+    }
+});
+
+app.get('/api/user/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id).select('username');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: 'Server error.' });
     }
 });
 
@@ -125,7 +152,9 @@ app.get('/api/classes', async (req, res) => {
 // Endpoint to create a new class
 app.post('/api/classes', async (req, res) => {
     try {
-        const { code, title } = req.body;
+        // Sanitize the incoming request data
+        const code = sanitize(req.body.code);
+        const title = sanitize(req.body.title);
 
         // Ensure all required fields are provided
         if (!code || !title) {
@@ -133,7 +162,9 @@ app.post('/api/classes', async (req, res) => {
         }
 
         // Check if a class with the same code or title already exists in the database
-        const existingClass = await Class.findOne({ $or: [{ code }, { title }]} );
+        const existingClass = await Class.findOne({
+            $or: [{ code }, { title }],
+        });
         if (existingClass) {
             return res.status(409).json({ message: 'Class with this code or title already exists.' });
         }
@@ -143,7 +174,7 @@ app.post('/api/classes', async (req, res) => {
 
         res.status(201).json({
             message: 'Class created successfully.',
-            data: newClass // Send back the created class for client-side confirmation
+            data: newClass, // Send back the created class for client-side confirmation
         });
     } catch (error) {
         console.error('Error creating class:', error);
@@ -154,33 +185,33 @@ app.post('/api/classes', async (req, res) => {
 // Endpoint to retrieve class details by slug
 app.get('/api/classes/:slug', async (req, res) => {
     try {
-        // Extract the `slug` parameter from the URL
-        const { slug } = req.params;
+        // Sanitize the `slug` parameter
+        const slug = sanitize(req.params.slug);
 
         // Query the database to find the class with the given slug
         const classDoc = await Class.findOne({ slug }).populate({
             path: 'reviews', // Populate the reviews field
-            populate: { path: 'user', select: 'username' } // Within each review, populate the user field and only include the username field from the user document
+            populate: { path: 'user', select: 'username' }, // Within each review, populate the user field and only include the username field from the user document
         });
 
         if (!classDoc) {
             return res.status(404).json({ message: 'Class not found.' });
         }
-        
+
         // Send the class details
         res.status(200).json(classDoc);
     } catch (error) {
         console.error('Error fetching class details:', error);
-        res.status(500).json({ message: 'Server error. Could get fetch class details.' });
+        res.status(500).json({ message: 'Server error. Could not fetch class details.' });
     }
 });
 
 // Endpoint to retrieve a specific review by ID with authentication
 app.get('/api/reviews/:reviewId', authenticate, async (req, res) => {
-    // Extract the reviewId parameter from the URL
-    const { reviewId } = req.params;
-
     try {
+        // Sanitize the reviewId parameter
+        const reviewId = sanitize(req.params.reviewId);
+
         // Query the database to find the review by its ID
         const review = await Review.findById(reviewId);
         if (!review) {
@@ -202,11 +233,22 @@ app.get('/api/reviews/:reviewId', authenticate, async (req, res) => {
 // Endpoint to add a review to a class
 app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
     try {
-        // Extract the authenticated user's ID from the request object (set by the authenticate middleware)
-        const userId = req.userId;
-        // Extract the `slug` parameter from the URL
-        const { slug } = req.params;
-        const { professor, semester, grade, rating, difficulty, workload, learningValue, comment} = req.body;
+        // Extract and sanitize the authenticated user's ID from the request object
+        const userId = sanitize(req.userId);
+        // Sanitize the `slug` parameter
+        const slug = sanitize(req.params.slug);
+
+        // Sanitize the request body fields
+        const {
+            professor,
+            semester,
+            grade,
+            rating,
+            difficulty,
+            workload,
+            learningValue,
+            comment
+        } = sanitize(req.body);
 
         // Ensure all required fields are provided
         if (!professor || !semester || !grade || !rating || !difficulty || !workload || !learningValue || !comment) {
@@ -225,7 +267,7 @@ app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
             class: classDoc._id, // Associate the review with the class
             professor,
             semester,
-            grade, 
+            grade,
             rating,
             difficulty,
             workload,
@@ -250,7 +292,7 @@ app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
         await Class.findByIdAndUpdate(classDoc._id, averages);
         
         // Add the review's ID to the user's reviews array
-        await User.findByIdAndUpdate(userId, { $push: {reviews: review._id } });
+        await User.findByIdAndUpdate(userId, { $push: { reviews: review._id } });
         
         res.status(201).json({ message: 'Review added successfully.', review });
     } catch (error) {
@@ -262,8 +304,10 @@ app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
 // Endpoint to update a specific review by its ID
 app.put('/api/reviews/:reviewId', authenticate, async (req, res) => {
     try {
-        const { reviewId } = req.params;
-        const updatedFields = req.body;
+        // Sanitize the `reviewId` parameter
+        const reviewId = sanitize(req.params.reviewId);
+        // Sanitize the updated fields in the request body
+        const updatedFields = sanitize(req.body);
 
         // Find the review by its ID in the database
         const review = await Review.findById(reviewId);
@@ -305,7 +349,8 @@ app.put('/api/reviews/:reviewId', authenticate, async (req, res) => {
 // Endpoint to delete a specific review by its ID
 app.delete('/api/reviews/:reviewId', authenticate, async (req, res) => {
     try {
-        const { reviewId } = req.params;
+        // Sanitize the reviewId parameter
+        const reviewId = sanitize(req.params.reviewId);
 
         // Find the review by its ID in the database
         const review = await Review.findById(reviewId);
@@ -335,17 +380,20 @@ app.delete('/api/reviews/:reviewId', authenticate, async (req, res) => {
         const classDoc = await Class.findById(review.class).populate('reviews');
         const reviews = classDoc.reviews;
         // Calculate new averages or reset to 0 if no reviews remain
-        const averages = reviews.length > 0 ? {
-            averageRating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
-            averageDifficulty: reviews.reduce((sum, r) => sum + r.difficulty, 0) / reviews.length,
-            averageWorkload: reviews.reduce((sum, r) => sum + r.workload, 0) / reviews.length,
-            averageLearningValue: reviews.reduce((sum, r) => sum + r.learningValue, 0) / reviews.length,
-        } : {
-            averageRating: 0,
-            averageDifficulty: 0,
-            averageWorkload: 0,
-            averageLearningValue: 0,
-        };
+        const averages = reviews.length > 0
+            ? {
+                averageRating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
+                averageDifficulty: reviews.reduce((sum, r) => sum + r.difficulty, 0) / reviews.length,
+                averageWorkload: reviews.reduce((sum, r) => sum + r.workload, 0) / reviews.length,
+                averageLearningValue: reviews.reduce((sum, r) => sum + r.learningValue, 0) / reviews.length,
+            }
+            : {
+                averageRating: 0,
+                averageDifficulty: 0,
+                averageWorkload: 0,
+                averageLearningValue: 0,
+            };
+
         // Update the class document with the recalculated averages
         await Class.findByIdAndUpdate(review.class, averages);
 

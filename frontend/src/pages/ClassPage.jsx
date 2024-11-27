@@ -69,11 +69,11 @@ const ClassPage = ({ isLoggedIn }) => {
     
 
     if (loading) {
-        return <p className="text-center text-4xl mt-4 text-neutral-500">Loading...</p>;
+        return <p className="text-center text-4xl mt-4 text-stone-500">Loading...</p>;
     }
 
     if (!classData) {
-        return <p className="text-center text-4xl mt-4 text-neutral-500">Class not found.</p>;
+        return <p className="text-center text-4xl mt-4 text-stone-500">Class not found.</p>;
     }
 
     // Destructure averages for the chart
@@ -85,13 +85,13 @@ const ClassPage = ({ isLoggedIn }) => {
             {/* Title and Chart Section */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-8 py-10">
                 <div className="md:w-2/3 text-center md:text-left">
-                    <h1 className="text-4xl font-bold text-neutral-500 mb-4">
+                    <h1 className="text-4xl font-bold text-stone-500 mb-4">
                         Reviews for {classData.title}
                     </h1>
                     {isLoggedIn && (
                         <Link
                             to={`/${slug}/rate`}
-                            className="inline-block bg-violet-400 text-neutral-100 px-6 py-2 rounded-lg hover:bg-violet-500"
+                            className="inline-block bg-violet-300 text-stone-100 px-8 py-3 text-xl rounded-lg hover:bg-violet-400"
                         >
                             Post a Review
                         </Link>
@@ -104,7 +104,7 @@ const ClassPage = ({ isLoggedIn }) => {
                             datasets: [
                                 {
                                     data: [averageRating, averageDifficulty, averageWorkload, averageLearningValue],
-                                    backgroundColor: 'rgba(103, 58, 183, 0.8)', // Violet color
+                                    backgroundColor: 'rgba(163, 140, 243, 0.8)',
                                     borderRadius: 8,
                                 },
                             ],
@@ -134,14 +134,14 @@ const ClassPage = ({ isLoggedIn }) => {
                     reviews.map((review) => (
                         <div
                             key={review._id}
-                            className="bg-neutral-200 rounded-lg mb-6 p-6"
+                            className="bg-stone-200 rounded-lg mb-6 p-6"
                         >
                             {/* Top Row: Professor and Date */}
                             <div className="flex justify-between items-center mb-4">
                                 <p className="text-lg text-violet-500 font-bold">
-                                    Professor: <span className="text-neutral-600 font-normal">{review.professor} | </span>
-                                    Semester: <span className="text-neutral-600 font-normal">{review.semester} | </span>
-                                    Grade: <span className="text-neutral-600 font-normal">{review.grade}</span>
+                                    Professor: <span className="text-stone-600 font-normal">{review.professor} | </span>
+                                    Semester: <span className="text-stone-600 font-normal">{review.semester} | </span>
+                                    Grade: <span className="text-stone-600 font-normal">{review.grade}</span>
                                 </p>
                                 <p className="text-lg font-bold text-violet-500">
                                     {new Intl.DateTimeFormat('en-US', {
@@ -155,23 +155,23 @@ const ClassPage = ({ isLoggedIn }) => {
                             {/* Metrics Row */}
                             <div className="grid grid-cols-4 gap-4 mb-4">
                                 {/* Rating */}
-                                <div className="bg-neutral-100 p-2 rounded-lg text-center">
-                                    <p className="text-2xl text-neutral-600">{review.rating}</p>
+                                <div className="bg-stone-100 p-2 rounded-lg text-center">
+                                    <p className="text-2xl text-stone-600">{review.rating}</p>
                                     <p className="text-base font-bold text-violet-500">Rating</p>
                                 </div>
                                 {/* Difficulty */}
-                                <div className="bg-neutral-100 p-2 rounded-lg text-center">
-                                    <p className="text-2xl text-neutral-600">{review.difficulty}</p>
+                                <div className="bg-stone-100 p-2 rounded-lg text-center">
+                                    <p className="text-2xl text-stone-600">{review.difficulty}</p>
                                     <p className="text-base font-bold text-violet-500">Difficulty</p>
                                 </div>
                                 {/* Workload */}
-                                <div className="bg-neutral-100 p-2 rounded-lg text-center">
-                                    <p className="text-2xl text-neutral-600">{review.workload}</p>
+                                <div className="bg-stone-100 p-2 rounded-lg text-center">
+                                    <p className="text-2xl text-stone-600">{review.workload}</p>
                                     <p className="text-base font-bold text-violet-500">Workload</p>
                                 </div>
                                 {/* Learning Value */}
-                                <div className="bg-neutral-100 p-2 rounded-lg text-center">
-                                    <p className="text-2xl text-neutral-600">{review.learningValue}</p>
+                                <div className="bg-stone-100 p-2 rounded-lg text-center">
+                                    <p className="text-2xl text-stone-600">{review.learningValue}</p>
                                     <p className="text-base font-bold text-violet-500">Learning Value</p>
                                 </div>
                             </div>
@@ -179,8 +179,8 @@ const ClassPage = ({ isLoggedIn }) => {
                             {/* Comments */}
                             <div>
                                 <p className="text-violet-500 text-lg font-bold mb-2">Comments:</p>
-                                <div className="bg-neutral-100 p-4 rounded-lg">
-                                    <p className="text-neutral-600">{review.comment}</p>
+                                <div className="bg-stone-100 p-4 rounded-lg">
+                                    <p className="text-stone-600">{review.comment}</p>
                                 </div>
                             </div>
 
@@ -189,13 +189,13 @@ const ClassPage = ({ isLoggedIn }) => {
                                 <div className="flex justify-end gap-4 mt-4">
                                     <button
                                         onClick={() => handleEdit(review._id)}
-                                        className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-500"
+                                        className="bg-blue-400 text-stone px-4 py-2 rounded-lg hover:bg-blue-500"
                                     >
                                         Edit
                                     </button>
                                     <button
                                         onClick={() => handleDelete(review._id)}
-                                        className="bg-rose-400 text-white px-4 py-2 rounded-lg hover:bg-rose-500"
+                                        className="bg-rose-400 text-stone px-4 py-2 rounded-lg hover:bg-rose-500"
                                     >
                                         Delete
                                     </button>
@@ -204,7 +204,7 @@ const ClassPage = ({ isLoggedIn }) => {
                         </div>
                     ))
                 ) : (
-                    <p className="text-center text-xl text-gray-500">
+                    <p className="text-center text-xl text-stone-500">
                         No reviews yet. Be the first to post one!
                     </p>
                 )}

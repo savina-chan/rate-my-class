@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home"; // Home page component
-import Register from "./pages/Register"; // Register page component
+import Home from "./pages/Home";
+import Register from "./pages/Register";
 import Login from "./pages/Login";
 import CreateClass from './pages/CreateClass';
 import ClassPage from './pages/ClassPage';
@@ -13,7 +13,6 @@ import EditReview from './pages/EditReview';
 // Define the main App component
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    // console.log(isLoggedIn);
 
     // Check authentication status when the app loads
     useEffect(() => {

@@ -37,7 +37,7 @@ const Register = () => {
     return (
         <div className="flex items-center justify-center">
             <div className="p-8 rounded-lg max-w-md w-full">
-                <h2 className="text-4xl font-bold text-center mb-6 text-neutral-500">Register</h2>
+                <h2 className="text-4xl font-bold text-center mb-6 text-stone-500">Register</h2>
                 {message && <p className="text-center text-lg text-red-500 mb-4">{message}</p>}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
@@ -75,14 +75,14 @@ const Register = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-violet-400 text-neutral-100 py-2 rounded-lg hover:bg-violet-500"
+                        className="w-full bg-violet-300 text-stone-100 py-2 rounded-lg hover:bg-violet-400"
                     >
                         Register
                     </button>
                 </form>
-                <p className="mt-4 text-center text-xl text-neutral-500">
+                <p className="mt-4 text-center text-xl text-stone-500">
                     Already have an account?{' '}
-                    <a href="/login" className="text-violet-500 hover:underline">
+                    <a href="/login" className="text-violet-400 hover:underline">
                         Login
                     </a>
                 </p>

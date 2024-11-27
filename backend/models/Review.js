@@ -12,7 +12,7 @@ const ReviewSchema = new mongoose.Schema({
     workload: { type: Number, required: true, min: 1, max: 5 },
     learningValue: { type: Number, required: true, min: 1, max: 5 },
     comment: { type: String, required: true, trim: true },
-}, { timestamps: true });
+}, { timestamps: true }); // Add createdAt and updatedAt fields
 
 // Create the Review model from the defined schema
 const Review = mongoose.model('Review', ReviewSchema);
