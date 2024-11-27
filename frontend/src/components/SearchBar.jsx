@@ -48,18 +48,18 @@ const SearchBar = () => {
 
             {/* Dropdown */}
             {isFocused && (
-                <ul className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
+                <ul className="absolute left-0 right-0 bg-white border border-neutral-300 rounded-lg max-h-60 overflow-y-auto z-10">
                     {filteredClasses.map((cls) => (
                         <li
                             key={cls._id}
                             onClick={() => handleClassClick(cls)} // Redirect on click
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            className="px-4 py-2 hover:bg-neutral-100 cursor-pointer"
                         >
                             {cls.code} - {cls.title}
                         </li>
                     ))}
                     {filteredClasses.length === 0 && (
-                        <li className="px-4 py-2 text-gray-500">No classes found</li>
+                        <li className="px-4 py-2 text-neutral-500">No classes found</li>
                     )}
                 </ul>
             )}

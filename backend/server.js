@@ -33,85 +33,88 @@ app.use(cors());
 app.use(cookieParser());
 
 // Routes
-// User registration
+// Endpoint for user registration
 app.post('/api/users/register', async (req, res) => {
     const { username, email, password } = req.body;
-    console.log(req.body)
 
-    // Basic validation to ensure all required fields are provided
+    // Ensure all required fields are provided
     if (!username || !email || !password) {
         return res.status(400).json( { message: 'All fields are required.'} )
     }
 
     try {
-        // Check if the user already exists
-        const existingUser = await User.findOne({ email });
+        // Check if a user with the same username or email already exists in the database
+        const existingUser = await User.findOne({ $or: [{ username }, { email }]} );
         if (existingUser) {
-            res.status(403).json({ message: 'User already exists.' });
+            res.status(403).json({ message: 'User with this username or email already exists.' });
         }
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create and save the new user
+        // Create a new user document
         const newUser = new User({
             username,
             email,
-            password: hashedPassword,
+            password: hashedPassword // Store the hashed password, not the plain text
         });
 
+        // Save the new user to the database
         await newUser.save();
 
-        res.status(201).json({ message: 'User registered successfully!' });
+        res.status(201).json({ message: 'User registered successfully.' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json( {message: 'Server error.'} )
+        console.error('Error registering an account:', error);
+        res.status(500).json( {message: 'Server error. Could not register.'} )
     }
-})
+});
 
+// Endpoint for user login
 app.post('/api/users/login', async (req, res) => {
     const { username, password } = req.body;
 
-    // Basic validation to ensure all required fields are provided
+    // Ensure all required fields are provided
     if (!username || !password) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
 
     try {
-        // Find user by username
+        // Find the user in the database by username
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
 
-        // Compare provided password with hashed password in database
+        // Compare the provided password with the hashed password in the database
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid credentials.' });
         }
 
-        // Generate a JWT
+        // Generate a JWT (JSON Web Token) for authentication
         const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         // Successful login
         res
             .cookie('token', token, {
-                // httpOnly: true, // Ensure cookie is only accessible by the server
                 sameSite: 'strict', // Prevent CSRF
-                maxAge: 24 * 60 * 60 * 1000 // Cookie expires in 1 day
+                maxAge: 24 * 60 * 60 * 1000 // Set cookie expiration to 1 day
             })
             .status(200)
-            .json({ message: 'Login successful!', token, userId: user._id });
+            .json({ message: 'Login successful.', token, userId: user._id });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error.' });
+        console.error('Error logging into account:', error);
+        res.status(500).json({ message: 'Server error. Could not login.' });
     }
 });
 
+// Endpoint to retrieve all classes
 app.get('/api/classes', async (req, res) => {
     try {
-        const classes = await Class.find(); // Retrieve all classes from the database
+        // Query the database to retrieve all classes
+        const classes = await Class.find();
+        // Send the retrieved classes in the response
         res.status(200).json(classes);
     } catch (error) {
         console.error('Error fetching classes:', error);
@@ -119,67 +122,72 @@ app.get('/api/classes', async (req, res) => {
     }
 });
 
+// Endpoint to create a new class
 app.post('/api/classes', async (req, res) => {
     try {
         const { code, title } = req.body;
 
-        // Validate required fields
+        // Ensure all required fields are provided
         if (!code || !title) {
-            return res.status(400).json({ message: 'Code and title are required.' });
+            return res.status(400).json({ message: 'All fields are required.' });
         }
 
-        // Check for duplicates
-        const existingClass = await Class.findOne({ code });
+        // Check if a class with the same code or title already exists in the database
+        const existingClass = await Class.findOne({ $or: [{ code }, { title }]} );
         if (existingClass) {
-            return res.status(409).json({ message: 'Class with this code already exists.' });
+            return res.status(409).json({ message: 'Class with this code or title already exists.' });
         }
 
-        // Create the new class document
+        // Create a new class document in the database
         const newClass = await Class.create({ code, title });
 
         res.status(201).json({
             message: 'Class created successfully.',
-            data: newClass,
+            data: newClass // Send back the created class for client-side confirmation
         });
     } catch (error) {
         console.error('Error creating class:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
+        res.status(500).json({ message: 'Server error. Could not create class.' });
     }
 });
 
-// GET endpoint to fetch class details by slug
+// Endpoint to retrieve class details by slug
 app.get('/api/classes/:slug', async (req, res) => {
     try {
+        // Extract the `slug` parameter from the URL
         const { slug } = req.params;
 
-        // Find the class by slug
+        // Query the database to find the class with the given slug
         const classDoc = await Class.findOne({ slug }).populate({
-            path: 'reviews',
-            populate: { path: 'user', select: 'username' } // Populate reviews with user details (e.g., username)
+            path: 'reviews', // Populate the reviews field
+            populate: { path: 'user', select: 'username' } // Within each review, populate the user field and only include the username field from the user document
         });
 
         if (!classDoc) {
             return res.status(404).json({ message: 'Class not found.' });
         }
-
-        res.status(200).json(classDoc); // Send the class details
+        
+        // Send the class details
+        res.status(200).json(classDoc);
     } catch (error) {
         console.error('Error fetching class details:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
+        res.status(500).json({ message: 'Server error. Could get fetch class details.' });
     }
 });
 
+// Endpoint to retrieve a specific review by ID with authentication
 app.get('/api/reviews/:reviewId', authenticate, async (req, res) => {
+    // Extract the reviewId parameter from the URL
     const { reviewId } = req.params;
 
     try {
+        // Query the database to find the review by its ID
         const review = await Review.findById(reviewId);
-
         if (!review) {
             return res.status(404).json({ message: 'Review not found.' });
         }
 
-        // Ensure the review belongs to the logged-in user
+        // Check if the review belongs to the authenticated user
         if (review.user.toString() !== req.userId) {
             return res.status(403).json({ message: 'Unauthorized to access this review.' });
         }
@@ -187,35 +195,34 @@ app.get('/api/reviews/:reviewId', authenticate, async (req, res) => {
         res.status(200).json(review);
     } catch (error) {
         console.error('Error fetching review:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
+        res.status(500).json({ message: 'Server error. Could not fetch review.' });
     }
 });
 
-
+// Endpoint to add a review to a class
 app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
-    // console.log('Request Received:', req.cookies) // Debug log
     try {
+        // Extract the authenticated user's ID from the request object (set by the authenticate middleware)
         const userId = req.userId;
-        // console.log(userId)
+        // Extract the `slug` parameter from the URL
         const { slug } = req.params;
         const { professor, semester, grade, rating, difficulty, workload, learningValue, comment} = req.body;
-        console.log('Request Data:', { professor, semester, grade, rating, difficulty, workload, learningValue, comment });
 
-        // Validate required fields
+        // Ensure all required fields are provided
         if (!professor || !semester || !grade || !rating || !difficulty || !workload || !learningValue || !comment) {
             return res.status(400).json({ message: 'All fields are required.' });
         }
 
-        // Find the class by slug
+        // Find the class by its slug
         const classDoc = await Class.findOne({ slug });
         if (!classDoc) {
             return res.status(404).json({ message: 'Class not found.' });
         }
 
-        // Create the review
+        // Create a new review with the provided data and the authenticated user's ID
         const review = await Review.create({
-            user: userId, // Use the user ID from the token
-            class: classDoc._id,
+            user: userId, // Associate the review with the authenticated user
+            class: classDoc._id, // Associate the review with the class
             professor,
             semester,
             grade, 
@@ -226,11 +233,11 @@ app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
             comment
         });
 
-        // Add the review to the class
+        // Add the review's ID to the class's reviews array
         classDoc.reviews.push(review._id);
         await classDoc.save();
 
-        // Calculate new averages
+        // Calculate new averages for the class based on all its reviews
         const reviews = await Review.find({ class: classDoc._id });
         const averages = {
             averageRating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
@@ -239,85 +246,95 @@ app.post('/api/classes/:slug/reviews', authenticate, async (req, res) => {
             averageLearningValue: reviews.reduce((sum, r) => sum + r.learningValue, 0) / reviews.length,
         };
 
+        // Update the class document with the new averages
         await Class.findByIdAndUpdate(classDoc._id, averages);
         
-        // Add the review to the user's reviews array
+        // Add the review's ID to the user's reviews array
         await User.findByIdAndUpdate(userId, { $push: {reviews: review._id } });
         
         res.status(201).json({ message: 'Review added successfully.', review });
     } catch (error) {
         console.error('Error adding review:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
+        res.status(500).json({ message: 'Server error. Could not add review.' });
     }
 });
 
+// Endpoint to update a specific review by its ID
 app.put('/api/reviews/:reviewId', authenticate, async (req, res) => {
     try {
         const { reviewId } = req.params;
         const updatedFields = req.body;
 
+        // Find the review by its ID in the database
         const review = await Review.findById(reviewId);
         if (!review) {
             return res.status(404).json({ message: 'Review not found.' });
         }
 
-        // Ensure the review belongs to the logged-in user
+        // Check if the review belongs to the authenticated user
         if (review.user.toString() !== req.userId) {
             return res.status(403).json({ message: 'Unauthorized to update this review.' });
         }
 
-        // Update the review fields
+        // Update the review fields with the data from the request body
         Object.assign(review, updatedFields);
+
+        // Save the updated review to the database
         await review.save();
 
-        // Recalculate averages for the class
+        // Retrieve the class associated with the review and its reviews
         const classDoc = await Class.findById(review.class).populate('reviews');
         const reviews = classDoc.reviews;
+        // Recalculate the averages for the class based on all its reviews
         const averages = {
             averageRating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
             averageDifficulty: reviews.reduce((sum, r) => sum + r.difficulty, 0) / reviews.length,
             averageWorkload: reviews.reduce((sum, r) => sum + r.workload, 0) / reviews.length,
             averageLearningValue: reviews.reduce((sum, r) => sum + r.learningValue, 0) / reviews.length,
         };
+        // Update the class document with the new averages
         await Class.findByIdAndUpdate(review.class, averages);
 
         res.status(200).json({ message: 'Review updated successfully.', review });
     } catch (error) {
         console.error('Error updating review:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
+        res.status(500).json({ message: 'Server error. Could not update review.' });
     }
 });
 
+// Endpoint to delete a specific review by its ID
 app.delete('/api/reviews/:reviewId', authenticate, async (req, res) => {
     try {
         const { reviewId } = req.params;
 
+        // Find the review by its ID in the database
         const review = await Review.findById(reviewId);
         if (!review) {
             return res.status(404).json({ message: 'Review not found.' });
         }
 
-        // Ensure the review belongs to the logged-in user
+        // Ensure the review belongs to the authenticated user
         if (review.user.toString() !== req.userId) {
             return res.status(403).json({ message: 'Unauthorized to delete this review.' });
         }
 
-        // Remove the review from the `reviews` array in the associated Class
+        // Remove the review's ID from the reviews array in the associated Class document
         await Class.findByIdAndUpdate(review.class, {
             $pull: { reviews: review._id },
         });
 
-        // Remove the review from the `reviews` array in the associated User
+        // Remove the review's ID from the reviews array in the associated User document
         await User.findByIdAndUpdate(review.user, {
             $pull: { reviews: review._id },
         });
 
-        // Delete the review
+        // Delete the review document from the database
         await Review.findByIdAndDelete(reviewId);
 
-        // Recalculate averages for the class
+        // Recalculate the averages for the associated class
         const classDoc = await Class.findById(review.class).populate('reviews');
         const reviews = classDoc.reviews;
+        // Calculate new averages or reset to 0 if no reviews remain
         const averages = reviews.length > 0 ? {
             averageRating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
             averageDifficulty: reviews.reduce((sum, r) => sum + r.difficulty, 0) / reviews.length,
@@ -329,12 +346,13 @@ app.delete('/api/reviews/:reviewId', authenticate, async (req, res) => {
             averageWorkload: 0,
             averageLearningValue: 0,
         };
+        // Update the class document with the recalculated averages
         await Class.findByIdAndUpdate(review.class, averages);
 
         res.status(200).json({ message: 'Review deleted successfully.' });
     } catch (error) {
         console.error('Error deleting review:', error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
+        res.status(500).json({ message: 'Server error. Could not delete review.' });
     }
 });
 
@@ -348,5 +366,5 @@ app.get('*', (req, res) => {
 
 // Start the server on the specified port and log the URL
 app.listen(PORT ?? 3000, () => {
-    console.log(`Server running on http://localhost:${PORT}`)
+    console.log(`Server running on http://${process.env.HOST ?? 'localhost'}:${PORT ?? 3000}`);
 });

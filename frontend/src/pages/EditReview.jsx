@@ -62,7 +62,7 @@ const EditReview = ({ isLoggedIn }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isLoggedIn) {
-            alert('You must be logged in to post a review.');
+            alert('You must be logged in to edit a review.');
             navigate(`/${slug}`);
             return;
         }
@@ -91,7 +91,7 @@ const EditReview = ({ isLoggedIn }) => {
 
         try {
             const response = await axios.put(`/api/reviews/${reviewId}`, formattedData, { withCredentials: true });
-            
+
             if (response.status === 200) {
                 navigate(`/${slug}`); // Redirect back to the class page after successful update
             }
