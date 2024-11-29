@@ -13,7 +13,7 @@ import cookieParser from 'cookie-parser';
 import authenticate from './auth.js';
 import sanitize from 'mongo-sanitize';
 
-// Load environment variables from the .env file located in the root directory
+// Load environment variables from the .env file
 dotenv.config();
 
 // Connect to MongoDB

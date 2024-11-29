@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+// EditReview component allows logged-in users to edit an existing review
 const EditReview = ({ isLoggedIn }) => {
-    const { slug, reviewId } = useParams();
+    const { slug, reviewId } = useParams(); // Extract class slug and review ID from the URL parameters
     const navigate = useNavigate();
 
+    // State to manage the form inputs
     const [formData, setFormData] = useState({
         professor: '',
         semester: '',
@@ -17,40 +19,40 @@ const EditReview = ({ isLoggedIn }) => {
         comment: '',
     });
 
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState(''); // State for storing feedback or error messages
 
     // Fetch the review data
     useEffect(() => {
         const fetchReview = async () => {
             try {
                 const response = await axios.get(`/api/reviews/${reviewId}`, { withCredentials: true });
-                setFormData(response.data);
+                setFormData(response.data); // Populate the form with the existing review data
             } catch (error) {
                 console.error('Error fetching review:', error);
                 setMessage('Failed to load review.');
             }
         };
         fetchReview();
-    }, [reviewId]);
+    }, [reviewId]); // Dependency array ensures this runs when the review ID changes
 
+    // Handle changes to form inputs and update state
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const { name, value } = e.target; // Get input name and value
+        setFormData({ ...formData, [name]: value }); // Update the specific input in the state
     };
 
-    // Validate the professor name
+    // Validate the professor's name to ensure it includes at least two words
     const validateProfessor = (value) => {
-        // Check if the input contains at least two words
-        const words = value.trim().split(/\s+/);
-        return words.length >= 2;
+        const words = value.trim().split(/\s+/); // Split input by whitespace
+        return words.length >= 2; // Ensure at least two words
     };
 
-    // Capitalize the first letter of each name for the professor
+    // Capitalize the first letter of each word in the professor's name
     const capitalizeProfessor = (professor) => {
         return professor
-            .split(/\s+/)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-            .join(' ');
+            .split(/\s+/) // Split input by whitespace
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+            .join(' '); // Rejoin words with a space
     };
 
     // Validate the semester format
@@ -59,41 +61,45 @@ const EditReview = ({ isLoggedIn }) => {
         return semesterPattern.test(value);
     };
 
+    // Handle form submission to update the review
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent the default form submission behavior
+
+        // Redirect user to the class page if they are not logged in
         if (!isLoggedIn) {
             alert('You must be logged in to edit a review.');
-            navigate(`/${slug}`);
+            navigate(`/${slug}`); // Redirect to the class page
             return;
         }
 
-        // Check professor validity
+        // Check if the professor's name is valid
         if (!validateProfessor(formData.professor)) {
             alert('Professor name must include both a first and last name.');
             return;
         }
 
-        // Check semester validity
+        // Check if the semester format is valid
         if (!validateSemester(formData.semester)) {
             alert('Semester must have a valid season (capitalized) and a 4-digit year.');
             return;
         }
 
-        // Convert numeric fields to numbers
+        // Format the data before submitting
         const formattedData = {
             ...formData,
-            professor: capitalizeProfessor(formData.professor),
-            rating: Number(formData.rating),
+            professor: capitalizeProfessor(formData.professor), // Capitalize the professor's name
+            rating: Number(formData.rating), // Convert string input to numbers
             difficulty: Number(formData.difficulty),
             workload: Number(formData.workload),
             learningValue: Number(formData.learningValue),
         };
 
         try {
+            // Send the PUT request to the backend to update the review
             const response = await axios.put(`/api/reviews/${reviewId}`, formattedData, { withCredentials: true });
 
             if (response.status === 200) {
-                navigate(`/${slug}`); // Redirect back to the class page after successful update
+                navigate(`/${slug}`); // Redirect back to the class page after a successful update
             }
         } catch (error) {
             console.error('Error updating review:', error);
@@ -230,7 +236,7 @@ const EditReview = ({ isLoggedIn }) => {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-violet-300 text-stone-100 py-2 rounded-lg hover:ring-violet-400"
+                        className="w-full bg-violet-300 text-stone-100 py-2 rounded-lg hover:bg-violet-400"
                     >
                         Update
                     </button>

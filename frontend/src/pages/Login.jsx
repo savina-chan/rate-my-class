@@ -3,23 +3,32 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
+// Login component handles user authentication
 const Login = ({ setIsLoggedIn }) => {
-    const [formData, setFormData] = useState({ username: '', password: '' });
-    const [message, setMessage] = useState('');
+    const [formData, setFormData] = useState({ username: '', password: '' }); // State to manage form inputs
+    const [message, setMessage] = useState(''); // State for displaying feedback messages
     const navigate = useNavigate();
 
+    // Handle changes in the form inputs and update state
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    // Handle form submission for login
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent the default form submission behavior
+
         try {
+            // Send a POST request to the login endpoint
             const response = await axios.post('/api/users/login', formData, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
+            // Store user ID in cookies for session tracking
             Cookies.set('userId', response.data.userId, { expires: 1 }); // Store the user ID
+            // Update the logged-in state to true
             setIsLoggedIn(true);
+            // Display a success message or a message from the response
             setMessage(response.data.message || 'Login successful!');
+            // Navigate to the homepage if the login is successful
             if (response.status === 200) {
                 navigate('/');
             }

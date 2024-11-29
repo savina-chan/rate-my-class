@@ -3,23 +3,27 @@ import { Link } from 'react-router-dom';
 import { logout } from '../../auth';
 import Cookies from 'js-cookie';
 
+// Layout component acts as the main wrapper for the application, including header and main content
 const Layout = ({ children, isLoggedIn, setIsLoggedIn }) => {
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(''); // State to store the username of the logged-in user
 
+    // Capitalize the first letter of a string
     const capitalizeFirstLetter = (string) => {
         if (!string) return '';
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
 
+    // useEffect to fetch and set the username when the user is logged in
     useEffect(() => {
         const fetchUsername = async () => {
             const userId = Cookies.get('userId'); // Retrieve the userId from the cookie
             if (userId) {
                 try {
+                    // Fetch user data from the API using the user ID.
                     const response = await fetch(`/api/user/${userId}`);
                     if (response.ok) {
                         const data = await response.json();
-                        setUsername(capitalizeFirstLetter(data.username));
+                        setUsername(capitalizeFirstLetter(data.username)); // Update the username state
                     } else {
                         console.error('Failed to fetch username:', response.statusText);
                     }
@@ -30,14 +34,15 @@ const Layout = ({ children, isLoggedIn, setIsLoggedIn }) => {
         };
 
         if (isLoggedIn) {
-            fetchUsername();
+            fetchUsername(); // Fetch username only if user is logged in
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn]); // Run this effect whenever isLoggedIn changes
 
+    // Handle user logout
     const handleLogout = () => {
-        logout(); // Remove the token cookie
-        setIsLoggedIn(false); // Update the login state
-        setUsername(''); // Clear the username
+        logout(); // // Log the user out by removing authentication tokens or cookies
+        setIsLoggedIn(false); // Update the login state to reflect the user is logged out
+        setUsername(''); // Clear the username state
     };
 
     return (

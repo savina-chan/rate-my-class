@@ -2,34 +2,32 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-// Display a registration form with username, email, and password fields
+// Register component allows new users to create an account
 const Register = () => {
-    // State to manage form input values
-    const [formData, setFormData] = useState({ username: '', email: '', password: '' });
-    // State to manage success or error messages
-    const [message, setMessage] = useState('');
+    const [formData, setFormData] = useState({ username: '', email: '', password: '' }); // State to manage form input values
+    const [message, setMessage] = useState(''); // State to manage success or error messages
     const navigate = useNavigate();
 
-    // Update the formData state when input fields are changed
+    // Update the formData state when input fields change
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value});
     };
 
-    // Handle form submission
+    // Handle form submission to register a new user
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent the default form submission behavior
+        e.preventDefault(); // Prevent the default browser behavior on form submission
+        
         try {
-            // Send a POST request to the backend API to register the user
+            // Send a POST request to the backend to register the user
             const response = await axios.post('/api/users/register', formData, { headers: { 'Content-Type': 'application/json' } });
             setMessage(response.data.message || 'Registration successful!');
 
-            // Redirect to the home page if registration is successful
+            // Redirect to the home page if the registration is successful
             if (response.status === 201) {
                 navigate('/');
             }
         } catch (error) {
-            // Handle errors and set the error message
             setMessage(error.response.data.message || 'An error occurred.');
         }
     }

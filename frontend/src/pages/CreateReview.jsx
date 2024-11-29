@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+// CreateReview component allows logged-in users to post a review for a class
 const CreateReview = ({ isLoggedIn }) => {
-    const { slug } = useParams(); // Get the class slug from the URL
+    const { slug } = useParams(); // Extract the class slug from the URL parameters
     const navigate = useNavigate();
 
-    // State for form data
+    // State to manage the form inputs
     const [formData, setFormData] = useState({
         professor: '',
         semester: '',
@@ -18,27 +19,27 @@ const CreateReview = ({ isLoggedIn }) => {
         comment: ''
     });
 
-    // State for messages or errors
+    // State for storing messages or errors to display to the user
     const [message, setMessage] = useState('');
 
+    // Handle input changes and update the form state dynamically
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value});
+        setFormData({ ...formData, [name]: value}); // Update the specific input in the state
     };
 
-    // Validate the professor name
+    // Validate the professor's name to ensure it includes at least two words
     const validateProfessor = (value) => {
-        // Check if the input contains at least two words
-        const words = value.trim().split(/\s+/);
-        return words.length >= 2;
+        const words = value.trim().split(/\s+/); // Split input by whitespace
+        return words.length >= 2; // Ensure at least two words
     };
 
-    // Capitalize the first letter of each name for the professor
+    // Capitalize the first letter of each name for the professor's input
     const capitalizeProfessor = (professor) => {
         return professor
-            .split(/\s+/)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-            .join(' ');
+            .split(/\s+/) // Split by whitespace
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+            .join(' '); // Join back into a single string
     };
 
     // Validate the semester format
@@ -47,44 +48,45 @@ const CreateReview = ({ isLoggedIn }) => {
         return semesterPattern.test(value);
     };
 
-    // Handle form submission
+    // Handle form submission for creating a review
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent the default form submission behavior
+
+        // Redirect user to the class page if they are not logged in
         if (!isLoggedIn) {
             alert('You must be logged in to post a review.');
             navigate(`/${slug}`);
             return;
         }
 
-        // Check professor validity
+        // Check if the professor's name is valid
         if (!validateProfessor(formData.professor)) {
             alert('Professor name must include both a first and last name.');
             return;
         }
 
-        // Check semester validity
+        // Check if the semester format is valid
         if (!validateSemester(formData.semester)) {
             alert('Semester must have a valid season (capitalized) and a 4-digit year.');
             return;
         }
 
-        // Convert numeric fields to numbers
+        // Format the data before submitting
         const formattedData = {
             ...formData,
-            professor: capitalizeProfessor(formData.professor),
-            rating: Number(formData.rating),
+            professor: capitalizeProfessor(formData.professor), // Capitalize the professor's name
+            rating: Number(formData.rating), // Convert string input to numbers
             difficulty: Number(formData.difficulty),
             workload: Number(formData.workload),
             learningValue: Number(formData.learningValue),
         };
 
         try {
-            // Send a POST request to the backend
-            // console.log(`POST URL: /api/classes/${slug}/reviews`, formattedData);
+            // Send the POST request to the backend to create a new review
             const response = await axios.post(`/api/classes/${slug}/reviews`, formattedData, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
 
             if (response.status === 201) {
-                // Redirect back to the class page after a successful submission
+                // Navigate back to the class page after a successful submission
                 navigate(`/${slug}`);
             }
         } catch (error) {
@@ -222,7 +224,7 @@ const CreateReview = ({ isLoggedIn }) => {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-violet-300 text-stone-100 py-2 rounded-lg hover:ring-violet-400"
+                        className="w-full bg-violet-300 text-stone-100 py-2 rounded-lg hover:bg-violet-400"
                     >
                         Submit
                     </button>

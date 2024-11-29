@@ -2,52 +2,58 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+// CreateClass component provides a form for logged-in users to create a new class
 const CreateClass = ({ isLoggedIn }) => {
-    const [formData, setFormData] = useState({ code: '', title: '' });
-    const [message, setMessage] = useState('');
+    const [formData, setFormData] = useState({ code: '', title: '' }); // State to manage the form input values
+    const [message, setMessage] = useState(''); // State to display a success or error message to the user
     const navigate = useNavigate();
 
+    // Handle changes to form inputs and update the corresponding state
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData({ ...formData, [name]: value }); // Dynamically update the field being edited
     };
 
-    // Validate class code format
+    // validate the class code format using a regex pattern
     const validateClassCode = (code) => {
         const classCodePattern = /^[A-Z]{2,5}-[A-Z]{2,3} \d{1,4}$/; 
         // Pattern: 2–5 uppercase letters, a dash, 2–3 uppercase letters, a space, and 1–4 digits
         return classCodePattern.test(code);
     };
 
-    // Capitalize the first letter of each word in the title
+    // Capitalize the first letter of each word in the class title
     const capitalizeTitle = (title) => {
         return title
-            .split(/\s+/)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-            .join(' ');
+            .split(/\s+/) // Split the title into words by whitespace
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+            .join(' '); // Join the words back into a single string
     };
 
+    // Handle form submission for creating a class
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent the default form submission behavior
+
+        // Redirect to home if the user is not logged in
         if (!isLoggedIn) {
             alert('You must be logged in to create a class.');
             navigate('/');
             return;
         }
 
-        // Validate class code
+        // Validate the class code format
         if (!validateClassCode(formData.code)) {
             alert('Class code must be in the format: ABCD-XX 123 (Subject-SchoolCode ClassCode, with uppercase letters and numbers).');
             return;
         }
 
-        // Format the title
+        // Format the title by capitalizing each word
         const formattedData = {
             ...formData,
             title: capitalizeTitle(formData.title),
         };
 
         try {
+            // Send a POST request to the API to create the class
             const response = await axios.post('/api/classes', formattedData, {
                 headers: { 'Content-Type': 'application/json' }
             });

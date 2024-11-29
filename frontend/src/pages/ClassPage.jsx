@@ -13,51 +13,54 @@ import { Bar } from 'react-chartjs-2';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 
-// Register Chart.js components
+// Register Chart.js components for use in the Bar chart
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Title);
 
+// ClassPage component displays detailed information about a class, including reviews and analytics
 const ClassPage = ({ isLoggedIn }) => {
-    const { slug } = useParams(); // Get the class slug from the URL
-    const [classData, setClassData] = useState(null); // State for class details
-    const [reviews, setReviews] = useState([]); // State for reviews
+    const { slug } = useParams(); // State to store class details
+    const [classData, setClassData] = useState(null); // State to store class reviews
+    const [reviews, setReviews] = useState([]); // State to track loading status
     const [loading, setLoading] = useState(true); // State for loading
     const navigate = useNavigate();
 
-    // Fetch class details and reviews
+    // Fetch class details and reviews when the component is mounted or the slug changes
     useEffect(() => {
         const fetchClassData = async () => {
             try {
-                const response = await axios.get(`/api/classes/${slug}`);
-                setClassData(response.data);
-                // Sort reviews by most recent first
+                const response = await axios.get(`/api/classes/${slug}`); // Fetch class details
+                setClassData(response.data); // Update class details in state
+                // Sort reviews by most recent first, if available
                 const sortedReviews = response.data.reviews
                     ? response.data.reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     : [];
-                setReviews(sortedReviews);
+                setReviews(sortedReviews); // Update reviews in state
             } catch (error) {
                 console.error('Error fetching class details:', error);
             } finally {
-                setLoading(false); // Set loading to false after fetching data
+                setLoading(false); // Set loading to false after fetch is complete
             }
         };
-        fetchClassData();
-    }, [slug]);
+        fetchClassData(); // Call the function to fetch class data
+    }, [slug]); // Re-run the effect when the slug changes
 
+    // Navigate to the edit review page with the review ID
     const handleEdit = (reviewId) => {
-        navigate(`/${slug}/edit-review/${reviewId}`); // Redirect to an edit page with the review ID
+        navigate(`/${slug}/edit-review/${reviewId}`);
     };
 
+    // Delete a review and update the UI
     const handleDelete = async (reviewId) => {
         if (window.confirm('Are you sure you want to delete this review?')) {
             try {
-                // Delete the review
+                // Send a DELETE request to remove the review
                 await axios.delete(`/api/reviews/${reviewId}`, { withCredentials: true });
     
-                // Update the reviews state to remove the deleted review
+                // Update the reviews state to exclude the deleted review
                 const updatedReviews = reviews.filter((review) => review._id !== reviewId);
                 setReviews(updatedReviews);
     
-                // Fetch the updated class data to refresh the chart
+                // Fetch updated class data to refresh the chart
                 const response = await axios.get(`/api/classes/${slug}`);
                 setClassData(response.data); // Update class data to reflect new averages
     
@@ -67,18 +70,19 @@ const ClassPage = ({ isLoggedIn }) => {
         }
     };
     
-
+    // Display a loading message while fetching data
     if (loading) {
         return <p className="text-center text-4xl mt-4 text-stone-500">Loading...</p>;
     }
 
+    // Display an error message if class data is not found
     if (!classData) {
         return <p className="text-center text-4xl mt-4 text-stone-500">Class not found.</p>;
     }
 
-    // Destructure averages for the chart
+    // Destructure averages for the chart display
     const { averageRating, averageDifficulty, averageWorkload, averageLearningValue } = classData;
-    const userId = Cookies.get('userId');
+    const userId = Cookies.get('userId'); // Get the logged-in user's ID from cookies
 
     return (
         <div className="container mx-auto">
