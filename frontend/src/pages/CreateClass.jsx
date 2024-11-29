@@ -18,7 +18,7 @@ const CreateClass = ({ isLoggedIn }) => {
     const validateClassCode = (code) => {
         const classCodePattern = /^[A-Z]{2,5}-[A-Z]{2,3} \d{1,4}$/; 
         // Pattern: 2–5 uppercase letters, a dash, 2–3 uppercase letters, a space, and 1–4 digits
-        return classCodePattern.test(code);
+        return classCodePattern.test(code.toUpperCase());
     };
 
     // Capitalize the first letter of each word in the class title
@@ -42,13 +42,14 @@ const CreateClass = ({ isLoggedIn }) => {
 
         // Validate the class code format
         if (!validateClassCode(formData.code)) {
-            alert('Class code must be in the format: ABCD-XX 123 (Subject-SchoolCode ClassCode, with uppercase letters and numbers).');
+            setMessage('Class code must be in the format: ABCD-XX 123 (Subject-SchoolCode ClassCode).');
             return;
         }
 
         // Format the title by capitalizing each word
         const formattedData = {
             ...formData,
+            code: formData.code.toUpperCase(),
             title: capitalizeTitle(formData.title),
         };
 

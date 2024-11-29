@@ -42,10 +42,15 @@ const CreateReview = ({ isLoggedIn }) => {
             .join(' '); // Join back into a single string
     };
 
+    // Capitalize the semester's season
+    const capitalizeSemester = (semester) => {
+        return semester.charAt(0).toUpperCase() + semester.slice(1).toLowerCase();
+    };
+
     // Validate the semester format
     const validateSemester = (value) => {
         const semesterPattern = /^(Fall|Winter|Spring|Summer) \d{4}$/;
-        return semesterPattern.test(value);
+        return semesterPattern.test(capitalizeSemester(value));
     };
 
     // Handle form submission for creating a review
@@ -61,13 +66,13 @@ const CreateReview = ({ isLoggedIn }) => {
 
         // Check if the professor's name is valid
         if (!validateProfessor(formData.professor)) {
-            alert('Professor name must include both a first and last name.');
+            setMessage('Professor name must include both a first and last name.');
             return;
         }
 
         // Check if the semester format is valid
         if (!validateSemester(formData.semester)) {
-            alert('Semester must have a valid season (capitalized) and a 4-digit year.');
+            setMessage('Semester must have a valid season and a 4-digit year.');
             return;
         }
 
@@ -75,6 +80,7 @@ const CreateReview = ({ isLoggedIn }) => {
         const formattedData = {
             ...formData,
             professor: capitalizeProfessor(formData.professor), // Capitalize the professor's name
+            semester: capitalizeSemester(formData.semester), // Capitalize the semester's season
             rating: Number(formData.rating), // Convert string input to numbers
             difficulty: Number(formData.difficulty),
             workload: Number(formData.workload),
