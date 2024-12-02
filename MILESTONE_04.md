@@ -69,8 +69,8 @@ Short description for links above
 
 Link to github line number(s) for schemas (db.js or models folder)
 ---
-[db.js](/backend/db.js) - Database connection setup.
-[models](/backend/models) - Contains Mongoose schemas for `Class`, `Review`, and `User`.
+* [db.js](/backend/db.js) - Database connection setup.
+* [models](/backend/models) - Contains Mongoose schemas for `Class`, `Review`, and `User`.
 
 Description of research topics above with points
 ---
