@@ -56,11 +56,11 @@ Special Instructions for Form 3
 
 First link to github line number(s) for constructor, HOF, etc.
 ---
-https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan/blob/7ba6a264806dac70329949809b054ad8785d691d/frontend/src/pages/ClassPage.jsx#L138
+https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan/blob/7ba6a264806dac70329949809b054ad8785d691d/frontend/src/pages/ClassPage.jsx#L138-L208
 
 Second link to github line number(s) for constructor, HOF, etc.
 ---
-https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan/blob/7ba6a264806dac70329949809b054ad8785d691d/frontend/src/components/SearchBar.jsx#L53
+https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan/blob/7ba6a264806dac70329949809b054ad8785d691d/frontend/src/components/SearchBar.jsx#L53-L61
 
 Short description for links above
 ---
@@ -82,7 +82,7 @@ Links to github line number(s) for research topics described above (one link per
 ---
 * React: [frontend](/frontend)
 * Tailwind CSS: [components](/frontend/src/components) and [pages](/frontend/src/pages)
-* Chart.js: [ClassPage.jsx](https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan/blob/7ba6a264806dac70329949809b054ad8785d691d/frontend/src/pages/ClassPage.jsx#L16)
+* Chart.js: [ClassPage.jsx](https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan/blob/7ba6a264806dac70329949809b054ad8785d691d/frontend/src/pages/ClassPage.jsx#L105-L131)
 
 Optional project notes 
 --- 
@@ -93,6 +93,6 @@ Attributions
 ---
 * [React Documentation](https://react.dev/learn) - Used as a reference for React concepts and implementation details, although I had prior knowledge of React; used for [frontend](/frontend).
 * [Vite Documentation](https://vite.dev/guide/) - Used to guide the setup and configuration of the Vite build tool; used for [vite.config.js](/frontend/vite.config.js).
-* [Chart.js Bar Chart Documentation](https://www.chartjs.org/docs/latest/charts/bar.html) - Referenced for implementing and customizing bar charts for data visualization; used for [ClassPage.jsx](https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan/blob/7ba6a264806dac70329949809b054ad8785d691d/frontend/src/pages/ClassPage.jsx#L16).
-* [Tailwind CSS Documentation](https://tailwindcss.com/docs/installation) - Used for initial setup and reference for utility classes; [components](/frontend/src/components) and [pages](/frontend/src/pages).
+* [Chart.js Bar Chart Documentation](https://www.chartjs.org/docs/latest/charts/bar.html) - Referenced for implementing and customizing bar charts for data visualization; used for [ClassPage.jsx](https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-savina-chan/blob/7ba6a264806dac70329949809b054ad8785d691d/frontend/src/pages/ClassPage.jsx#L105-L131).
+* [Tailwind CSS Documentation](https://tailwindcss.com/docs/installation) - Used for initial setup and reference for utility classes; used for [components](/frontend/src/components) and [pages](/frontend/src/pages).
 * [NerdCave Tailwind Cheat Sheet](https://nerdcave.com/tailwind-cheat-sheet) - Utilized as a quick reference to speed up styling decisions; used for [components](/frontend/src/components) and [pages](/frontend/src/pages).
